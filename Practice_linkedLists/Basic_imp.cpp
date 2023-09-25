@@ -1,3 +1,8 @@
+/*
+Basic methods for operating with Singly Linked Lists
+Jorge 24/09/23 (initial version)
+*/
+
 #include <iostream>
 
 // Linked list single node w
