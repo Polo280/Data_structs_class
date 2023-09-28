@@ -25,8 +25,9 @@ class DoubleLinkedList{ // Doubly linked list class w
         void deleteAll();  // KABOOOM!    
 };
 
+// Complexity - O(1) constant
 void DoubleLinkedList::insert_begin(int value){
-    // Memory allocation
+    // Memory alloca.tion
     Node *new_node = new Node;
     // Set params for new node
     new_node->value = value; 
@@ -39,6 +40,7 @@ void DoubleLinkedList::insert_begin(int value){
     head = new_node;
 }
 
+// Complexity = O(n) linear
 void DoubleLinkedList::insert_end(int value){
     Node *current_node = this->head;
     while(current_node->next != NULL){   // Traverse through all the elements
@@ -49,6 +51,7 @@ void DoubleLinkedList::insert_end(int value){
     current_node->next = tail;
 }
 
+// Complexity = O(n) linear
 void DoubleLinkedList::insert_mid(int index, int value){
     Node *current_node = this->head;
     int count = 1;
@@ -58,6 +61,7 @@ void DoubleLinkedList::insert_mid(int index, int value){
     }
     if(current_node == NULL){
         std::cerr << "Index is too large" << std::endl;  // Cerr is unbuffered so its faster than cout
+        return;
     }
     // Update node pointers
     Node *node_aux = new Node;
@@ -67,6 +71,7 @@ void DoubleLinkedList::insert_mid(int index, int value){
     node_aux->next->prev = node_aux;
 }
 
+// Complexity = O(n) linear
 Node* DoubleLinkedList::search(int value){
     Node *current_node = head;
     while(current_node->value != value && current_node != NULL){
@@ -75,6 +80,7 @@ Node* DoubleLinkedList::search(int value){
     return current_node;
 }
 
+// Complexity = O(n) linear, best = O(1)
 // Display in both directions
 void DoubleLinkedList::display(){
     if(head == NULL){
@@ -98,20 +104,37 @@ void DoubleLinkedList::display(){
     }
 }
 
+// Complexity - Best O(1) - worst = O(n)
 void DoubleLinkedList::del(int value){
-    Node *current_node = this->head;
-    while(current_node->value != value && current_node != NULL){
-        current_node = current_node->next;
-    }
-    if(current_node == NULL){
-        std::cerr << "Element not found for deletion" <<  std::endl;
+    if(this->head->value == value){
+        Node *aux = this->head;
+        this->head = this->head->next;
+        this->head->prev = aux->prev;
+        delete(aux);
         return;
+    }else{
+        Node *current_node = this->head->next;
+        while(current_node->value != value && current_node->next != NULL){
+            current_node = current_node->next;
+        }
+        if(current_node->next == NULL){
+            std::cout << "Element not found for deletion" <<  std::endl;
+            return;
+        }
+        else if(current_node->next->next != NULL){
+            current_node->prev->next = current_node->next;  // Double link
+            current_node->next->prev = current_node->prev;
+            delete(current_node);
+            return;
+        }else{
+            current_node->prev->next = NULL;
+            delete(current_node);
+            return;
+        }
     }
-    current_node->prev->next = current_node->next;  // Double link
-    current_node->next->prev = current_node->prev;
-    delete(current_node);
 }
 
+ // Complexity = O(n)
 void DoubleLinkedList::deleteAll(){
     Node *aux = this->head->next->next;
     // Traverse all elements deleting them
@@ -125,23 +148,26 @@ void DoubleLinkedList::deleteAll(){
 
 int main(){
     DoubleLinkedList doubleList;
-    doubleList.insert_begin(6);
+    doubleList.insert_begin(1);
     doubleList.insert_begin(5);
-    doubleList.insert_begin(4);
-    doubleList.insert_end(7);
-    doubleList.insert_end(8);
-    doubleList.insert_end(10);
-    doubleList.insert_mid(6, 9);
+    doubleList.insert_begin(10);
+    doubleList.insert_end(20);
+    doubleList.insert_end(30);
+    doubleList.insert_end(40);
+    doubleList.insert_mid(70, 50);  // Index, value
     doubleList.display();
     // Search test
-    std::cout << "\nValue 4 is at memory address: " << doubleList.search(4) << std::endl;
-    std::cout << "Value 7 is at memory address: " << doubleList.search(7) << std::endl;
+    std::cout << "\nValue 10 is at memory address: " << doubleList.search(10) << std::endl;
+    std::cout << "Value 40 is at memory address: " << doubleList.search(40) << std::endl;
     // Delete test
-    doubleList.del(7);
-    std::cout << "\nDeleted number 7" << std::endl;
+    doubleList.del(20);
+    std::cout << "\nDelete number 20" << std::endl;
+    doubleList.display();
+    std::cout << "\nDelete number 10" << std::endl;
+    doubleList.del(100);
     doubleList.display();
     // Kaboom
-    std::cout << "\n\nList deletion" << std::endl;
+    std::cout << "\n\nAll nodes deletion" << std::endl;
     doubleList.deleteAll();
     doubleList.display();
     return EXIT_SUCCESS;
