@@ -42,6 +42,7 @@ void Queue::enqueue(int value){
     }
 }
 
+// Time complexity: Best Case = O(1) if stack is empty, otherwise O(n) due to for loop
 Node Queue::dequeue(){
     // Check if its empty
     if(this->checkEmpty()){
@@ -61,7 +62,7 @@ Node Queue::dequeue(){
     }
 }
 
-// Complexity = O(1) in best, average and worst
+// Complexity = O(1)
 bool Queue::checkEmpty(){
     if(rear == -1){
         return true;
@@ -69,7 +70,7 @@ bool Queue::checkEmpty(){
     return false;
 }
 
-// Complexity = O(1) in best, average and worst
+// Complexity = O(1)
 bool Queue::checkFull(){
     if(this->front == 0 && rear == size - 1){
         return true;
@@ -77,7 +78,7 @@ bool Queue::checkFull(){
     return false;
 }
 
-// Time complexity: Best case when queue is empty O(1), worst case O(n) because of loop
+// Time complexity: Best case when queue is empty O(1), worst case O(n) due to loop
 void Queue::display(){
     if(this->checkEmpty()){std::cout << "The queue is empty" << std::endl;}
     else{
