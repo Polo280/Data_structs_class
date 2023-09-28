@@ -20,6 +20,8 @@ class Queue{
         ~Queue(){};
         void enqueue(int);
         Node dequeue();
+        Node* search(int);
+        void update(int, int);
         void display();
         bool checkEmpty();
         bool checkFull();
@@ -78,6 +80,24 @@ bool Queue::checkFull(){
     return false;
 }
 
+// Time complexity = O(n)
+Node* Queue::search(int value){
+    // Sequential search
+    for(int i=0; i < this->rear + 1; i++){
+        if((this->arrayBegin + i)->value == value){
+            return (this->arrayBegin + i);
+        }
+    }
+    return nullptr;
+}
+
+// Time complexity = O(1)
+void Queue::update(int index, int value){
+    if(index > this->rear){std::cout << "Index too large" << std::endl; throw index;}
+    Node *aux = this->arrayBegin + index; // Get the desired location to update
+    aux->value = value;
+}
+
 // Time complexity: Best case when queue is empty O(1), worst case O(n) due to loop
 void Queue::display(){
     if(this->checkEmpty()){std::cout << "The queue is empty" << std::endl;}
@@ -103,7 +123,23 @@ int main(){
     }
     q1.display(); 
     // ADD AGAIN
-
+    std::cout << "\nSearch test" <<  std::endl;
+    for(int i=0; i < n - 1; i++){
+        q1.enqueue(rand() % 500);   // Add random numbers from 0 to 500
+    }
+    int s = 58;     // Element to search
+    q1.enqueue(s);
+    q1.display();
+    // SEARCH
+    std::cout << "Element " << s << " is in memory location " << q1.search(s) << std::endl;
+    Node *search_ex = q1.search(s) - 2;  // Search example (access to the value of another memory location in the array to test)
+    int search_val = search_ex->value;
+    std::cout << "Element " << search_val << " is in memory location " << q1.search(search_val) << std::endl;
+    // UPDATE
+    int index = 0; int value = 77;
+    std::cout << "Updated index " << index << " with value " << value << std::endl;
+    q1.update(index, value);
+    q1.display();
     return EXIT_SUCCESS;
 }
  
