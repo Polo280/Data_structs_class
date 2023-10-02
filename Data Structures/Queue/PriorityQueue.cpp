@@ -39,13 +39,13 @@ void PriorityQueue::enqueue(int value, int priority){
 Node PriorityQueue::dequeue(){
     if(this->isEmpty()){std::cout << "Queue is empty, cannot dequeue" << std::endl;}
     Node aux; aux.priority = 0; int rm_index;
-    for(int i=0; i < size_index + 1; i++){
+    for(int i=0; i < size_index + 1; i++){        // Search for the node with the highest priority
         if(this->queueArray[i].priority > aux.priority){
             rm_index  = i;
             aux = this->queueArray[i];
         }
-    }
-    for(int i = rm_index; i < size_index; i++){
+    } 
+    for(int i = rm_index; i < size_index; i++){   // Update indexes after the value that was removed
         this->queueArray[i] = this->queueArray[i + 1];
     }
     this->size_index --;
@@ -80,7 +80,7 @@ bool PriorityQueue::isFull(){
 void PriorityQueue::update(int index, int value, int priority){
     if(this->isEmpty()){std::cout << "Cannot update value, queue is empty" << std::endl; return;}
     if(index > size_index){std::cout << "Cannot update value, index out of range" << std::endl; return;}
-    this->queueArray[index].value = value;
+    this->queueArray[index].value = value;   // Update node in the given index with the corresponding values
     this->queueArray[index].priority = priority;
     std::cout << "\n\nSuccesfully updated node index " << index << " with value " << value << " priority " << priority << std::endl;
 }
@@ -89,30 +89,31 @@ void PriorityQueue::update(int index, int value, int priority){
 Node* PriorityQueue::peek(int value){
     Node *nullp = nullptr;
     if(this->isEmpty()){std::cout << "Queue is empty" << std::endl; return nullp;}
-    for(int i=0; i < this->size_index + 1; i++){
+    for(int i=0; i < this->size_index + 1; i++){       // Search the element that matches the given value
         if(this->queueArray[i].value == value){
             std::cout << "\nElement with value " << value << " is stores in memory address " << &queueArray[i] << std::endl;
-            return &queueArray[i];
+            return &queueArray[i];      // Return pointer to the location it is stored in
         }
     }
+    std::cout << "\nElement with value " << value << " not found" << std::endl;
     return nullp;
 }
 
 int main(){
     // Creation of a priority queue
-    PriorityQueue pq1(6);
-    pq1.enqueue(14, 85);
-    pq1.enqueue(16, 4);
-    pq1.enqueue(7, 800);
-    pq1.enqueue(500, 10);
-    pq1.enqueue(1024, 15);
-    pq1.enqueue(32, 12);
+    PriorityQueue pq1(10);
+    // Enqueue tests
+    pq1.enqueue(1, 2);
+    pq1.enqueue(2, 4);
+    pq1.enqueue(3, 6);
+    pq1.enqueue(4, 8);
+    pq1.enqueue(-9, 18);
     pq1.display();
     //Update test
-    pq1.update(2, 77, 10);
+    pq1.update(0, 14, 2);
     pq1.display();
     // Peek test
-    Node *mem_address = pq1.peek(1024);
+    Node *mem_address = pq1.peek(-9);
     pq1.display();
     // Dequeue test
     Node test = pq1.dequeue();
