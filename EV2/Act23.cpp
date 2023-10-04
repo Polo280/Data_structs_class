@@ -1,5 +1,7 @@
-/*
-Actividad integral estructura de datos lineales (Act 2.3)
+/* EQUIPO 5
+- Ana Valeria Guzman Vazquez    / A01643224
+- Clarissa Gardea Coronado      / A01569420
+- Jorge Alejandro Gonzalez Diaz / A00344893
 */
 
 #include <iostream>
@@ -91,7 +93,7 @@ Node* DoublyLinkedSorted::search(long long *ip_val){
     if(loop_node == NULL){
         return NULL;
     }else{
-        return loop_node->prev;
+        return loop_node;
     }
 }
 
