@@ -203,12 +203,14 @@ int main(){
     // GET INPUTS
     long long *ptr = userInputs();  // Get the pointer where array with user values are stored starts
     Node* start = reg_list.search(ptr);
-    OutputFinal << start->message;
-    // Write to sorted search
-    // while(start != NULL){
-    //     OutputFinal << start->message << std::endl;
-    //     start = start->next;
-    // }
+    Node* end = reg_list.search((ptr + 1));
+    if(start != NULL){
+        // Write to sorted search
+        while(start != NULL && start != end){
+            OutputFinal << start->message << std::endl;
+            start = start->next;
+        }
+    }
     // Cerrar archivos
     OutputFile.close();
     InputFile.close();
