@@ -6,14 +6,14 @@ Actividad integral estructura de datos lineales (Act 2.3)
 #include <string>
 #include <fstream>
 #include <sstream>  
-#include <vector>
+#include <cmath>
 using namespace std;
 
 struct Node{
     // Pointers to next and previous nodes
     Node *next; Node *prev; 
     // Data to be stored
-    unsigned long ip_index;
+    long long ip_index;
     string message;
 };
 
@@ -24,8 +24,9 @@ class DoublyLinkedSorted{
         DoublyLinkedSorted() : head(NULL){};
         ~DoublyLinkedSorted(){};
         void insert(Node);
-        void search(int);
         void display();
+        Node* getHead();
+        Node* search(long long*);
 };
 
 void DoublyLinkedSorted::insert(Node node){
@@ -82,13 +83,71 @@ void DoublyLinkedSorted::display(){
     std::cout << std::endl;
 }
 
+Node* DoublyLinkedSorted::search(long long *ip_val){
+    Node *loop_node = this->head;
+    while(loop_node->ip_index < *ip_val && loop_node != NULL){
+        loop_node = loop_node->next;
+    }
+    if(loop_node == NULL){
+        return NULL;
+    }else{
+        return loop_node->prev;
+    }
+}
+
+Node* DoublyLinkedSorted::getHead(){
+    return head;
+}
+
+long long* userInputs(){  // Returns a pointer to the start of an array containing the start and the end values to search
+    std::cout << " BIENVENIDO AL SISTEMA DE REGISTRO DE ACCESOS\n";
+    std::cout << "---------------------------------------------\n";
+    std::cout << "Favor de ingresar direcciones ip de inicio y fin para la búsqueda, formato (###.###.###.###)\n";
+    std::cout << "Direccion de inicio: ";
+    // Array declared static to use it outside the function call
+    static long long input_values[2];
+    static long long ip_val_start, ip_val_end;         // Aux to store the value of the ip
+    string input_start, input_end;   // Variable to store the user inputs
+    
+    // Get and prepare string inputs
+    std::cin >> input_start;
+    std::cout << "Direccion final: ";
+    std::cin >> input_end;
+    for(std::string::iterator it = input_start.begin(); it != input_start.end(); it++){  // Start
+        if(*it == '.'){*it = ' ';}   // Replace . with blank spaces to use operators >> in stringstream
+    }
+    for(std::string::iterator it = input_end.begin(); it != input_end.end(); it++){  // End
+        if(*it == '.'){*it = ' ';}   // Replace . with blank spaces to use operators >> in stringstream
+    }
+    // Create stringstreams
+    stringstream ss(input_start);
+    stringstream ss2(input_end);
+    // Remove '.'s
+    for(int i=9; i >= -3; i=i-3){
+        ss >> input_start;
+        ss2 >> input_end;
+        try{
+            if(i >= 0){
+                ip_val_start = ip_val_start + stoi(input_start) * pow(10, i);  // Adding ip elements according to priority
+                ip_val_end = ip_val_end + stoi(input_end) * pow(10, i);
+            }
+        }catch (std::invalid_argument){
+            std::cerr << "One of the arguments is invalid, try again" << std::endl;
+            break;
+        }
+    }
+    // Add ip values to static array
+    input_values[0] = ip_val_start;
+    input_values[1] = ip_val_end;
+    return &input_values[0];   // return the location of the first element in the array
+}
+
 int main(){
     DoublyLinkedSorted reg_list;
-    // Clear console
-    // system("cls");
     // File management
     ifstream InputFile("bitacora.txt");
-    ifstream OutputFile("bitacoraSort.txt");
+    ofstream OutputFile("bitacoraSort.txt");
+    ofstream OutputFinal("bitacoraSearch.txt");
     // Check errors opening files
     if(!InputFile){std::cerr << "Error opening the input file" << std::endl; return 0;}
     if(!OutputFile){std::cerr << "Error opening the output file" << std::endl; return 0;}
@@ -109,7 +168,6 @@ int main(){
         string ip_string;
         ss >> ip_string;
         // Replace '.' and ':' in ip format for blank spaces
-        // std::string::iterator iter_aux;
         for(std::string::iterator iter_aux = ip_string.begin(); iter_aux != ip_string.end(); iter_aux ++){
             if(*iter_aux == '.' || *iter_aux == ':'){
                 *iter_aux = ' ';  // Replace
@@ -117,24 +175,45 @@ int main(){
         }
         // Convert to string stream
         stringstream ss2(ip_string);
-        int ip_value = 0;
-        //  Read until blank spaces
-        for(int i=5; i > 0; i--){
+        long long ip_value = 0;
+        //  Read ip values
+        for(int i=9; i >= -3; i=i-3){
             ss2 >> ip_string;
             try{
-                ip_value = ip_value + stoi(ip_string);
+                if(i >= 0){
+                    ip_value = ip_value + stoi(ip_string) * pow(10, i);  // Adding ip elements according to priority
+                }
             } catch (std::invalid_argument){
                 break;
             }
         }
-        std::cerr << ip_value << std::endl;
         // Start creating a node and assigning values
         Node data;
         data.message = message;
+        data.ip_index = ip_value;
+        //std::cerr<< ip_value;
+        reg_list.insert(data);  // Insert each node to linked list
     }
-    std::cerr << "\nProgram exited correctly";
+    // Write sorted items to bitacoraSort
+    Node *aux_node = reg_list.getHead();
+    while(aux_node != NULL){
+        OutputFile << aux_node->message << std::endl;
+        aux_node = aux_node->next;
+    }
+    // GET INPUTS
+    long long *ptr = userInputs();  // Get the pointer where array with user values are stored starts
+    Node* start = reg_list.search(ptr);
+    OutputFinal << start->message;
+    // Write to sorted search
+    // while(start != NULL){
+    //     OutputFinal << start->message << std::endl;
+    //     start = start->next;
+    // }
     // Cerrar archivos
     OutputFile.close();
     InputFile.close();
+    OutputFinal.close();
+    // Exit
+    std::cerr << "\nProgram exited correctly\n";
     return EXIT_SUCCESS;
 }
