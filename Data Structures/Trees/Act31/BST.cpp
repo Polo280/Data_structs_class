@@ -16,62 +16,6 @@ struct Node{
     Node(){};
 };
 
-class Queue{
-    private:
-        Node *arrayBegin;      // Memory location of the start of the queue array
-        int front, rear;       // inndexes of first and last value in queue
-        int size;
-    public:
-        Queue(int n) : front(-1), rear(-1), size(n), arrayBegin(new Node[n]){};  // Constructor
-        ~Queue(){};
-        void enqueue(Node*);
-        Node* dequeue();
-        bool checkEmpty();
-        void display();
-};
-
-// Complexity - O(1) = constant in best, average and worst case 
-void Queue::enqueue(Node* aux){
-    // Enqueue
-    if(this->checkEmpty()){
-        *(this->arrayBegin) = *aux;
-        this->front ++; this->rear ++;   // Set the indexes to 0
-    }else{
-        this->rear++; 
-        *(this->arrayBegin + this->rear) = *aux;
-    }
-}
-
-// Time complexity: Best Case = O(1) if stack is empty, otherwise O(n) due to for loop
-inline Node* Queue::dequeue(){
-    // Check if its empty
-    if(this->checkEmpty()){
-        std::cout << "Cannot dequeue, queue is empty  "; 
-        this->front = -1; this->rear = -1;
-        return new Node(0);
-    }
-    else{
-        Node *aux_node = this->arrayBegin;  // Get the first node in queue
-        if(this->rear != this->front){
-            for(int i=0; i < this->rear; i++){
-                (this->arrayBegin + i)->value = (this->arrayBegin + (i + 1))->value;
-            }
-        }
-        this->rear --;
-        return aux_node;
-    }
-}
-
-// Complexity = O(1)
-inline bool Queue::checkEmpty(){
-    if(rear == -1){
-        return true;
-    }
-    return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
 class Bst{
     private:
         Node *root;
@@ -181,7 +125,7 @@ void Bst::levelByLevel(){
 }
 
 void Bst::visit(int selection){   // Menu type function for choosing display algorithm
-    if(this->root == nullptr){std::cerr << "The tree is empty" << std::endl;}
+    if(this->root == NULL){std::cerr << "The tree is empty" << std::endl;}
     switch (selection)
     {
     case 1:
@@ -250,9 +194,7 @@ int Bst::whatLevelPriv(int value, Node *&currentNode, int level){
     return -1;
 }
 
-int main(){
-    Bst tree(25);
-    // Insert values
+void insertVals(Bst &tree){
     tree.insert(15);
     tree.insert(50);
     tree.insert(10);
@@ -267,13 +209,37 @@ int main(){
     tree.insert(44);
     tree.insert(66);
     tree.insert(90);
-    tree.visit(4);
-    std::cerr << "Element 50 is in level: " << tree.whatLevelAmI(4) << std::endl;
+}
 
-    std::vector<int> vect;
-    tree.ancestors(4, vect);
-    for (int i = 0; i < vect.size(); i++) {
-        std::cerr << vect[i] << " ";
+int main(){
+    // Create a new tree
+    Bst tree(25);
+    // Insert values
+    insertVals(tree);
+    // Visits
+    std::cerr << "Show in preOrder" << std::endl;
+    tree.visit(1);
+    std::cerr << "`\nShow inOrder" << std::endl;
+    tree.visit(2);
+    std::cerr << "\nShow in postOrder" << std::endl;
+    tree.visit(3);
+    std::cerr << "\nShow in order level by level" << std::endl;
+    tree.visit(4);
+    // What level am I test
+    int element = 4;
+    std::cerr << "Element " << element << " is in level " << tree.whatLevelAmI(element) << std::endl;
+    // Tree height
+    std::cerr << "The height of the tree is " << tree.height() << std::endl;
+    // Element ancestors
+    element = 12;
+    std::cerr << "The ancestors of the element " << element << " are : ";
+    std::vector<int> ancestors;   // Vector for getting the ancestors
+    tree.ancestors(element, ancestors);
+    for(std::vector<int>::iterator it = ancestors.begin(); it != ancestors.end(); it ++){
+        std::cerr << *it << " - ";
     }
+    std::cerr << std::endl;
+    // Delete all
+    tree.deleteAll();
     return EXIT_SUCCESS;
 }
