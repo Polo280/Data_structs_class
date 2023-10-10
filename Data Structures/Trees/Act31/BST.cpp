@@ -83,7 +83,8 @@ class Bst{
         // Other functions
         int heightPriv(Node*&, int);
         void deleteAllPriv(Node*);
-        void ancestorsPriv(int, Node*&, std::vector<int>&);
+        void ancestorsPriv(int, Node *&, std::vector<int>&);
+        int whatLevelPriv(int, Node *&, int level);
     public:
         // Operations to display values (public) only to make initial recursive call
         void inOrder(){inOrderPriv(root);};
@@ -92,7 +93,7 @@ class Bst{
         void levelByLevel();
         // To get other data
         int height(){return heightPriv(root, 0);};
-        int whatLevelAmI(int);
+        int whatLevelAmI(int value){return whatLevelPriv(value, root, 1);};
         int getNumItems(); 
         void visit(int);
         void ancestors(int data, std::vector<int>& vect){ancestorsPriv(data, this->root, vect);};
@@ -225,6 +226,20 @@ void Bst::deleteAllPriv(Node* current){
     delete(current);
 }
 
+int Bst::whatLevelPriv(int value, Node *&currentNode, int level){
+     if (currentNode == NULL)
+        return -1;
+     else{
+        if (value == currentNode->value)
+            return level;
+        else if (value < currentNode->value)
+            return whatLevelPriv(value, currentNode->left, level + 1);
+        else if (value > currentNode->value)
+            return whatLevelPriv(value, currentNode->right, level + 1);
+    }
+    return -1;
+}
+
 int main(){
     Bst tree(25);
     // Insert values
@@ -243,23 +258,12 @@ int main(){
     tree.insert(66);
     tree.insert(90);
     //tree.visit(1);
+    std::cerr << "Element 50 is in level: " << tree.whatLevelAmI(4) << std::endl;
 
     std::vector<int> vect;
     tree.ancestors(4, vect);
     for (int i = 0; i < vect.size(); i++) {
         std::cerr << vect[i] << " ";
     }
-    tree.deleteAll();
-
-    // Operations
-    // tree.preOrder();
-    // std::cerr << std::endl;
-    // tree.inOrder();
-    // std::cerr << std::endl;
-    // tree.postOrder();
-    // std::cerr << std::endl;
-    // tree.levelByLevel();
-    // std::cerr << std::endl;
-    // std::cerr << tree.height() << std::endl;
     return EXIT_SUCCESS;
 }
