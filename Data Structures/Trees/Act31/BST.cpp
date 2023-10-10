@@ -6,6 +6,7 @@ Jorge Gonzalez 9/10/23
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <queue>
 
 // Base struct node
 struct Node{
@@ -159,15 +160,24 @@ void Bst::levelByLevel(){
         std::cerr << "The BST is empty, cannot display" << std::endl;
         return;
     }
-    Queue queue(pow(2, this->height() - 1));  // Create a queue considering the worst case size
-    Node *current;
-    queue.enqueue(this->root);
-    while(!queue.checkEmpty()){
-        current = queue.dequeue();
-        std::cerr << current->value << " - ";
-        if(current->left != NULL){queue.enqueue(current->left);}
+    std::queue<Node*> q1;
+    q1.push(this->root);
+
+    Node *aux;
+    while(!q1.empty()){
+        q1.push(NULL);
+
+        aux = q1.front();
+        while(aux != NULL){
+            std::cerr << aux->value << " ";
+            if(aux->left != NULL){q1.push(aux->left);}
+            if(aux->right != NULL){q1.push(aux->right);}
+            q1.pop();
+            aux = q1.front();
+        }
+        q1.pop();
+        std::cerr << std::endl;
     }
-    std::cerr << std::endl;
 }
 
 void Bst::visit(int selection){   // Menu type function for choosing display algorithm
@@ -257,7 +267,7 @@ int main(){
     tree.insert(44);
     tree.insert(66);
     tree.insert(90);
-    //tree.visit(1);
+    tree.visit(4);
     std::cerr << "Element 50 is in level: " << tree.whatLevelAmI(4) << std::endl;
 
     std::vector<int> vect;
