@@ -7,6 +7,7 @@ Jorge Gonzalez 9/10/23
 #include <cmath>
 #include <vector>
 #include <queue>
+#include <random>
 
 // Base struct node
 struct Node{
@@ -28,7 +29,7 @@ class Bst{
         // Other functions
         int heightPriv(Node*&, int);
         void deleteAllPriv(Node*);
-        void ancestorsPriv(int, Node *&, std::vector<int>&);
+        void ancestorsPriv(int, Node *&, std::vector<int>&, bool&);
         int whatLevelPriv(int, Node *&, int level);
     public:
         // Operations to display values (public) only to make initial recursive call
@@ -41,7 +42,7 @@ class Bst{
         int whatLevelAmI(int value){return whatLevelPriv(value, root, 1);};
         int getNumItems(); 
         void visit(int);
-        void ancestors(int data, std::vector<int>& vect){ancestorsPriv(data, this->root, vect);};
+        void ancestors(int data, std::vector<int>& vect, bool& state){ancestorsPriv(data, this->root, vect, state);};
         // Insert
         void insert(int value){insertPrivate(value, root);}
         void deleteAll(){deleteAllPriv(this->root);};
@@ -52,10 +53,12 @@ class Bst{
         ~Bst(){};
 };
 
+// Time complexity --> O(1) the complexity is constant in all cases
 int Bst::getNumItems(){   
     return this->num_elements;
 }
 
+// Time complexity --> O(n) the time consumption increases linearly the more elements we have in the tree
 void Bst::insertPrivate(int &data, Node *&current){   // Recursive function
     if(current == NULL){
         current = new Node(data);  // If pointer is not taken insert new value
@@ -72,6 +75,7 @@ void Bst::insertPrivate(int &data, Node *&current){   // Recursive function
     }
 }
 
+// Time complexity --> O(n) recursive calls increase linearly the more elements we have
 void Bst::preOrderPriv(Node *&current){   // Display in PreOrder
     if(current == NULL){
         return;
@@ -81,6 +85,7 @@ void Bst::preOrderPriv(Node *&current){   // Display in PreOrder
     preOrderPriv(current->right);
 }
 
+// Time complexity --> O(n) recursive calls increase linearly the more elements we have
 void Bst::inOrderPriv(Node *&current){
     if(current == NULL){     // End recursion
         return;
@@ -90,6 +95,7 @@ void Bst::inOrderPriv(Node *&current){
     inOrderPriv(current->right);
 }
 
+// Time complexity --> O(n) recursive calls increase linearly the more elements we have
 void Bst::postOrderPriv(Node *&current){
     if(current == NULL){
         return;
@@ -99,6 +105,7 @@ void Bst::postOrderPriv(Node *&current){
     std::cerr << current->value << " - ";
 }
 
+// Time complexity --> O(n) because what this function do is basically take each node, print its value and then add its existing children to a queue, the process repeats and time consumption increases linearly with the number of nodes we have
 void Bst::levelByLevel(){
     if(this->root == NULL){
         std::cerr << "The BST is empty, cannot display" << std::endl;
@@ -124,6 +131,7 @@ void Bst::levelByLevel(){
     }
 }
 
+// Time complexity --> O(1), the function is just a switch and if statement which calls other functions, so time complexity is constant
 void Bst::visit(int selection){   // Menu type function for choosing display algorithm
     if(this->root == NULL){std::cerr << "The tree is empty" << std::endl;}
     switch (selection)
@@ -143,36 +151,41 @@ void Bst::visit(int selection){   // Menu type function for choosing display alg
     }
 }
 
+// Tiem complexity --> O(n), time consumption increases linearly the more levels we have
 int Bst::heightPriv(Node *&current, int count){
     int counts[2];
-    if(current == NULL){  // Base case
-        return count;
+    if(current != NULL){  // Base case
+        // Recursive calls
+        counts[0] = heightPriv(current->left, count) + 1;
+        counts[1] = heightPriv(current->right, count) + 1;
+        if(counts[0] >= counts[1]){return counts[0];} else{return counts[1];}  // Return max subtree height
+    }else{
+        return 0;
     }
-    // Recursive calls
-    counts[0] = heightPriv(current->left, count + 1);
-    count = 0;
-    counts[1] = heightPriv(current->right, count + 1);
-    if(counts[0] >= counts[1]){return counts[0];} else{return counts[1];}  // Return max subtree height
 }
 
-void Bst::ancestorsPriv(int data, Node *&current, std::vector<int> &vect){
+// Time Complexity --> O(n) because time consumption incrceases linearly the more elements we have, it traverses one each time the requirements are met (if statement)
+void Bst::ancestorsPriv(int data, Node *&current, std::vector<int> &vect, bool& state){
     if(current == NULL){
     }else{
         if(data < current->value){
-            ancestorsPriv(data, current->left, vect);  
+            ancestorsPriv(data, current->left, vect, state);  
             vect.push_back(current->value);
         }else if (data > current->value){
-            ancestorsPriv(data, current->right, vect);
+            ancestorsPriv(data, current->right, vect, state);
             vect.push_back(current->value);
         }else{
+            state = true;
             return;
         }
     }
+    return;
 }
 
+// Time Complexity -> O(n) beacuse it has to delete each one of the nodes
 void Bst::deleteAllPriv(Node* current){
     if(current == NULL){
-        std::cerr << "The BST is now empty" << std::endl;
+        this->root = NULL;
         return;
     }
     deleteAllPriv(current->left);
@@ -180,10 +193,9 @@ void Bst::deleteAllPriv(Node* current){
     delete(current);
 }
 
+// Time complexity --> O(n), time increases linearly with the number of elements. It iterates through them once each time the specifications are met
 int Bst::whatLevelPriv(int value, Node *&currentNode, int level){
-     if (currentNode == NULL)
-        return -1;
-     else{
+     if (currentNode != NULL){
         if (value == currentNode->value)
             return level;
         else if (value < currentNode->value)
@@ -195,20 +207,9 @@ int Bst::whatLevelPriv(int value, Node *&currentNode, int level){
 }
 
 void insertVals(Bst &tree){
-    tree.insert(15);
-    tree.insert(50);
-    tree.insert(10);
-    tree.insert(22);
-    tree.insert(35);
-    tree.insert(70);
-    tree.insert(4);
-    tree.insert(12);
-    tree.insert(18);
-    tree.insert(24);
-    tree.insert(31);
-    tree.insert(44);
-    tree.insert(66);
-    tree.insert(90);
+    for(int i=0; i < rand() % 35; i++){
+        tree.insert(rand() % 35);
+    }
 }
 
 int main(){
@@ -226,20 +227,25 @@ int main(){
     std::cerr << "\nShow in order level by level" << std::endl;
     tree.visit(4);
     // What level am I test
-    int element = 4;
+    int element = rand() % 10;
     std::cerr << "Element " << element << " is in level " << tree.whatLevelAmI(element) << std::endl;
     // Tree height
     std::cerr << "The height of the tree is " << tree.height() << std::endl;
     // Element ancestors
-    element = 12;
+    element = 9;
     std::cerr << "The ancestors of the element " << element << " are : ";
     std::vector<int> ancestors;   // Vector for getting the ancestors
-    tree.ancestors(element, ancestors);
-    for(std::vector<int>::iterator it = ancestors.begin(); it != ancestors.end(); it ++){
-        std::cerr << *it << " - ";
-    }
+    bool exists = false;
+    tree.ancestors(element, ancestors, exists);
+    if(exists){
+        for(std::vector<int>::iterator it = ancestors.begin(); it != ancestors.end(); it ++){
+            std::cerr << *it << " - ";
+        }
+    }else{std::cerr << "Element does not exist" << std::endl;}
     std::cerr << std::endl;
     // Delete all
+    std::cerr << "Delete All Test" << std::endl;
     tree.deleteAll();
+    tree.visit(1);   // Test that its now empty
     return EXIT_SUCCESS;
 }
