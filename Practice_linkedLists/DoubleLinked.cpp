@@ -15,7 +15,7 @@ class DoubleLinkedList{ // Doubly linked list class w
     private:
         Node *head;
     public:
-        DoubleLinkedList():head(NULL){std::cout << "A doubly linked list was created" << std::endl;};
+        DoubleLinkedList():head(NULL){std::cerr << "A doubly linked list was created" << std::endl;};
         void insert_begin(int);
         void insert_mid(int, int);
         void insert_end(int);
@@ -84,22 +84,22 @@ Node* DoubleLinkedList::search(int value){
 // Display in both directions
 void DoubleLinkedList::display(){
     if(head == NULL){
-        std::cout << "List is empty" << std::endl;
+        std::cerr << "List is empty" << std::endl;
         return;
     }
     Node *current_node = this->head;
-    std::cout << current_node->value;
+    std::cerr << current_node->value;
     // Recorrer en una direccion
     while(current_node->next != NULL){
         current_node = current_node->next;
-        std::cout << " -> " << current_node->value;
+        std::cerr << " -> " << current_node->value;
     }
     // Recorrer al reves
-    std::cout << std::endl;
-    std::cout << current_node->value;
+    std::cerr << std::endl;
+    std::cerr << current_node->value;
     current_node = current_node->prev;
     while(current_node != NULL){
-        std::cout << " <- " << current_node->value;
+        std::cerr << " <- " << current_node->value;
         current_node = current_node->prev;
     }
 }
@@ -118,7 +118,7 @@ void DoubleLinkedList::del(int value){
             current_node = current_node->next;
         }
         if(current_node->next == NULL){
-            std::cout << "Element not found for deletion" <<  std::endl;
+            std::cerr << "Element not found for deletion" <<  std::endl;
             return;
         }
         else if(current_node->next->next != NULL){
@@ -157,17 +157,17 @@ int main(){
     doubleList.insert_mid(70, 50);  // Index, value
     doubleList.display();
     // Search test
-    std::cout << "\nValue 10 is at memory address: " << doubleList.search(10) << std::endl;
-    std::cout << "Value 40 is at memory address: " << doubleList.search(40) << std::endl;
+    std::cerr << "\nValue 10 is at memory address: " << doubleList.search(10) << std::endl;
+    std::cerr << "Value 40 is at memory address: " << doubleList.search(40) << std::endl;
     // Delete test
     doubleList.del(20);
-    std::cout << "\nDelete number 20" << std::endl;
+    std::cerr << "\nDelete number 20" << std::endl;
     doubleList.display();
-    std::cout << "\nDelete number 10" << std::endl;
+    std::cerr << "\nDelete number 10" << std::endl;
     doubleList.del(100);
     doubleList.display();
     // Kaboom
-    std::cout << "\n\nAll nodes deletion" << std::endl;
+    std::cerr << "\n\nAll nodes deletion" << std::endl;
     doubleList.deleteAll();
     doubleList.display();
     return EXIT_SUCCESS;

@@ -120,16 +120,16 @@ int busq_binaria_recur(vector<int> vect, int target, int low, int high){
 
 int main() {
     vector <int> vect {128, 321, 23, 12, 1, 24, 76, 43, 66};        
-    cout << "Ordenamiento por seleccion" << endl;
-    cout << "Array original: " ;
+    cerr << "Ordenamiento por seleccion" << endl;
+    cerr << "Array original: " ;
     for(int i: vect){
-        cout << i << ", ";
+        cerr << i << ", ";
     }
-    cout << endl;
+    cerr << endl;
     ordena_seleccion(vect);
-    cout << "Array ordenado: " ;
+    cerr << "Array ordenado: " ;
     for(int i: vect){
-        cout << i << ", ";
+        cerr << i << ", ";
     }
     return 0;
 }

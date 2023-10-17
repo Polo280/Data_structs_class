@@ -31,7 +31,7 @@ class Queue{
 void Queue::enqueue(int value){
     // Check if its not full
     if(this->checkFull()){
-        std::cout << "Queue is full, cannot add " << value << std::endl;
+        std::cerr << "Queue is full, cannot add " << value << std::endl;
         return;
     }
     // Enqueue
@@ -48,7 +48,7 @@ void Queue::enqueue(int value){
 Node Queue::dequeue(){
     // Check if its empty
     if(this->checkEmpty()){
-        std::cout << "Cannot dequeue, queue is empty  "; 
+        std::cerr << "Cannot dequeue, queue is empty  "; 
         this->front = -1; this->rear = -1;
         return *new Node;
     }
@@ -93,19 +93,19 @@ Node* Queue::search(int value){
 
 // Time complexity = O(1)
 void Queue::update(int index, int value){
-    if(index > this->rear){std::cout << "Index too large" << std::endl; throw index;}
+    if(index > this->rear){std::cerr << "Index too large" << std::endl; throw index;}
     Node *aux = this->arrayBegin + index; // Get the desired location to update
     aux->value = value;
 }
 
 // Time complexity: Best case when queue is empty O(1), worst case O(n) due to loop
 void Queue::display(){
-    if(this->checkEmpty()){std::cout << "The queue is empty" << std::endl;}
+    if(this->checkEmpty()){std::cerr << "The queue is empty" << std::endl;}
     else{
         for(int i=0; i < this->rear; i++){
-            std::cout << (this->arrayBegin + i)->value << " -> " ;
+            std::cerr << (this->arrayBegin + i)->value << " -> " ;
         }
-        std::cout << (this->arrayBegin + this->size - 1)->value << std::endl;
+        std::cerr << (this->arrayBegin + this->size - 1)->value << std::endl;
     }
 }
 
@@ -119,11 +119,11 @@ int main(){
     q1.display();
     // DEQUEUE
     for(int i=0; i < n + 1; i++){
-        std::cout << "Element dequeued: " << q1.dequeue().value << std::endl;
+        std::cerr << "Element dequeued: " << q1.dequeue().value << std::endl;
     }
     q1.display(); 
     // ADD AGAIN
-    std::cout << "\nSearch test" <<  std::endl;
+    std::cerr << "\nSearch test" <<  std::endl;
     for(int i=0; i < n - 1; i++){
         q1.enqueue(rand() % 500);   // Add random numbers from 0 to 500
     }
@@ -131,13 +131,13 @@ int main(){
     q1.enqueue(s);
     q1.display();
     // SEARCH
-    std::cout << "Element " << s << " is in memory location " << q1.search(s) << std::endl;
+    std::cerr << "Element " << s << " is in memory location " << q1.search(s) << std::endl;
     Node *search_ex = q1.search(s) - 2;  // Search example (access to the value of another memory location in the array to test)
     int search_val = search_ex->value;
-    std::cout << "Element " << search_val << " is in memory location " << q1.search(search_val) << std::endl;
+    std::cerr << "Element " << search_val << " is in memory location " << q1.search(search_val) << std::endl;
     // UPDATE
     int index = 0; int value = 77;
-    std::cout << "Updated index " << index << " with value " << value << std::endl;
+    std::cerr << "Updated index " << index << " with value " << value << std::endl;
     q1.update(index, value);
     q1.display();
     return EXIT_SUCCESS;

@@ -14,7 +14,7 @@ class CircularLinkedList{
         Node* head;
         Node* last;
     public: 
-        CircularLinkedList() : head(NULL), last(NULL){std::cout << "A circular linked list was created" << std::endl;}
+        CircularLinkedList() : head(NULL), last(NULL){std::cerr << "A circular linked list was created" << std::endl;}
         void insertBegin(int);
         void insertMid(int, int);
         void insertEnd(int);
@@ -59,7 +59,7 @@ void CircularLinkedList::insertMid(int index, int value){
             this->head = new_node;
             this->last = new_node;
             new_node->next = this->last;
-            std::cout << "List is empty, inserting element at start" << std::endl;
+            std::cerr << "List is empty, inserting element at start" << std::endl;
             return;
         }else{
             Node* current_node = this->head; int count = 1;
@@ -92,7 +92,7 @@ Node* CircularLinkedList::search(int value){
         current_node = current_node->next;
     }
     if(current_node == this->head){
-        std::cout << "Element was not found" << std::endl;
+        std::cerr << "Element was not found" << std::endl;
         return NULL;
     }else{
         return current_node;
@@ -144,12 +144,12 @@ void CircularLinkedList::display(){
         return;
     }
     Node *current_node = this->head->next;
-    std::cout << this->head->value;
+    std::cerr << this->head->value;
     while(current_node != this->head){
-        std::cout << " -> " << current_node->value;
+        std::cerr << " -> " << current_node->value;
         current_node = current_node->next;
     }
-    std::cout << std::endl;
+    std::cerr << std::endl;
 }
 
 int main(){
@@ -164,10 +164,10 @@ int main(){
     // Display list
     circular_list.display();
     // Search test
-    std::cout << "\nValue 4 is at memory address: " << circular_list.search(4) << std::endl;
-    std::cout << "Value 9 is at memory address: " << circular_list.search(9) << std::endl;
+    std::cerr << "\nValue 4 is at memory address: " << circular_list.search(4) << std::endl;
+    std::cerr << "Value 9 is at memory address: " << circular_list.search(9) << std::endl;
     // Delete element
-    std::cout << "\nDelete tests\n";
+    std::cerr << "\nDelete tests\n";
     circular_list.display();
     circular_list.del(4);
     circular_list.display();

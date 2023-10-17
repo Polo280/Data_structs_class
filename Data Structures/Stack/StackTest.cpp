@@ -29,7 +29,7 @@ class Stack{
 
 // Time complexity = O(1)
 void Stack::push(int value){
-    if(this->isFull()){std::cout << "The stack is full, cannot push" << std::endl; return;}
+    if(this->isFull()){std::cerr << "The stack is full, cannot push" << std::endl; return;}
     this->top ++;
     (this->stack_begin + top)->value = value;
 }
@@ -38,7 +38,7 @@ void Stack::push(int value){
 Node Stack::pop(){
     if(this->isEmpty()){
         Node *null_node = nullptr;
-        std::cout << "The stack is empty, cannot pop" << std::endl; 
+        std::cerr << "The stack is empty, cannot pop" << std::endl; 
         return *null_node;
     }
     Node aux = *(this->stack_begin + this->top);
@@ -55,7 +55,7 @@ Node* Stack::search(int value){
             return this->stack_begin + i;
         }
     }
-    std::cout << "Cannot find element " << value << " in stack" << std::endl;
+    std::cerr << "Cannot find element " << value << " in stack" << std::endl;
     return nullptr;  // Not found
 }
 
@@ -84,16 +84,16 @@ bool Stack::isFull(){
 
 // Complexity = Best case O(1), Otherwise O(n)
 void Stack::display(){
-    if(this->isEmpty()){std::cout << "The stack is empty" << std::endl; return;}
+    if(this->isEmpty()){std::cerr << "The stack is empty" << std::endl; return;}
     for(int i=0; i < top + 1; i++){
-        std::cout << (this->stack_begin + i)->value << " -> ";
+        std::cerr << (this->stack_begin + i)->value << " -> ";
     }
-    std::cout << std::endl;
+    std::cerr << std::endl;
 }
 
 // Complexity = O(1)
 void Stack::update(int index, int value){
-    if(index > this->top){std::cout << "Index out of limit" << std::endl; return;}
+    if(index > this->top){std::cerr << "Index out of limit" << std::endl; return;}
     Node *node = this->stack_begin + index;
     node->value = value;
 }
@@ -110,13 +110,13 @@ int main(){
     s1.push(41);
     s1.display();
     // PEEK
-    std::cout << "Peek at stack top: " << s1.peek().value <<std::endl;
+    std::cerr << "Peek at stack top: " << s1.peek().value <<std::endl;
     // POP
-    std::cout << "Pop stack: " << s1.pop().value << std::endl;
+    std::cerr << "Pop stack: " << s1.pop().value << std::endl;
     s1.display();
     // SEARCH
     int s = 10;
-    std::cout << "Element " << s << " is in memory location " << s1.search(s) << std::endl;
+    std::cerr << "Element " << s << " is in memory location " << s1.search(s) << std::endl;
     // UPDATE
     int index = 0; s = 2004;
     s1.update(index, s);

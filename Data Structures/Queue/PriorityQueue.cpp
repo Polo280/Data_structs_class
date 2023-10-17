@@ -15,7 +15,7 @@ class PriorityQueue{
         int size_index, max_size;
     public:
         PriorityQueue(int n) : max_size(n), size_index(-1), queueArray(new Node[n]){
-            std::cout << "A new priority queue was created" << std::endl;
+            std::cerr << "A new priority queue was created" << std::endl;
         };
         ~PriorityQueue(){};
         void enqueue(int, int);
@@ -29,7 +29,7 @@ class PriorityQueue{
 
 // Time complexity = O(1) constant in all cases
 void PriorityQueue::enqueue(int value, int priority){
-    if(this->isFull()){std::cout << "\nPriority queue is full, dequeue first to add more elements - value: " << value << std::endl; return;}
+    if(this->isFull()){std::cerr << "\nPriority queue is full, dequeue first to add more elements - value: " << value << std::endl; return;}
     this->size_index ++;
     this->queueArray[size_index].value = value;
     this->queueArray[size_index].priority = priority;
@@ -37,7 +37,7 @@ void PriorityQueue::enqueue(int value, int priority){
 
 // Time complexity = O(n), best case when queue is empty --> O(1)
 Node PriorityQueue::dequeue(){
-    if(this->isEmpty()){std::cout << "Queue is empty, cannot dequeue" << std::endl;}
+    if(this->isEmpty()){std::cerr << "Queue is empty, cannot dequeue" << std::endl;}
     Node aux; aux.priority = 0; int rm_index;
     for(int i=0; i < size_index + 1; i++){        // Search for the node with the highest priority
         if(this->queueArray[i].priority > aux.priority){
@@ -49,16 +49,16 @@ Node PriorityQueue::dequeue(){
         this->queueArray[i] = this->queueArray[i + 1];
     }
     this->size_index --;
-    std::cout << "\nDequeued node with value " << aux.value << " and priority of " << aux.priority << std::endl;
+    std::cerr << "\nDequeued node with value " << aux.value << " and priority of " << aux.priority << std::endl;
     return aux;
 }
 
 // Time complexity: O(n), best case when queue is empty --> O(1)
 void PriorityQueue::display(){
-    if(this->isEmpty()){std::cout << "Priority queue is empty" << std::endl; return;}
-    std::cout << "\nShowing in format (value, priority)" << std::endl;
+    if(this->isEmpty()){std::cerr << "Priority queue is empty" << std::endl; return;}
+    std::cerr << "\nShowing in format (value, priority)" << std::endl;
     for(int i=0; i < size_index + 1; i++){
-        std::cout << "(" << this->queueArray[i].value << " : " << this->queueArray[i].priority << ") - ";
+        std::cerr << "(" << this->queueArray[i].value << " : " << this->queueArray[i].priority << ") - ";
     }
 } 
 
@@ -78,24 +78,24 @@ bool PriorityQueue::isFull(){
 
 // Time complexity = O(1) in all cases
 void PriorityQueue::update(int index, int value, int priority){
-    if(this->isEmpty()){std::cout << "Cannot update value, queue is empty" << std::endl; return;}
-    if(index > size_index){std::cout << "Cannot update value, index out of range" << std::endl; return;}
+    if(this->isEmpty()){std::cerr << "Cannot update value, queue is empty" << std::endl; return;}
+    if(index > size_index){std::cerr << "Cannot update value, index out of range" << std::endl; return;}
     this->queueArray[index].value = value;   // Update node in the given index with the corresponding values
     this->queueArray[index].priority = priority;
-    std::cout << "\n\nSuccesfully updated node index " << index << " with value " << value << " priority " << priority << std::endl;
+    std::cerr << "\n\nSuccesfully updated node index " << index << " with value " << value << " priority " << priority << std::endl;
 }
 
 // Time complexity = O(n), best case when queue is empty = O(1)
 Node* PriorityQueue::peek(int value){
     Node *nullp = nullptr;
-    if(this->isEmpty()){std::cout << "Queue is empty" << std::endl; return nullp;}
+    if(this->isEmpty()){std::cerr << "Queue is empty" << std::endl; return nullp;}
     for(int i=0; i < this->size_index + 1; i++){       // Search the element that matches the given value
         if(this->queueArray[i].value == value){
-            std::cout << "\nElement with value " << value << " is stores in memory address " << &queueArray[i] << std::endl;
+            std::cerr << "\nElement with value " << value << " is stores in memory address " << &queueArray[i] << std::endl;
             return &queueArray[i];      // Return pointer to the location it is stored in
         }
     }
-    std::cout << "\nElement with value " << value << " not found" << std::endl;
+    std::cerr << "\nElement with value " << value << " not found" << std::endl;
     return nullp;
 }
 

@@ -15,7 +15,7 @@ class SingleLinkedList{
     private:
         Node *head;
     public:
-        SingleLinkedList() : head(NULL){std::cout << "Linked list created" << std::endl;}  // Initialize head member to NULL
+        SingleLinkedList() : head(NULL){std::cerr << "Linked list created" << std::endl;}  // Initialize head member to NULL
         void insert_begin(int);
         void insert_mid(int, int);  // One integer for value and another one for index
         void insert_end(int);
@@ -27,7 +27,7 @@ class SingleLinkedList{
 void SingleLinkedList::insert_begin(int value){
     Node *new_node = new Node;  // Allocate memory for new_node address
     if(new_node == NULL){  // In case memory is full
-        std::cout << "Cannot allocate memory for head node" << std::endl;
+        std::cerr << "Cannot allocate memory for head node" << std::endl;
         throw; 
     }
     // Assign values to new node created
@@ -40,7 +40,7 @@ void SingleLinkedList::insert_begin(int value){
 void SingleLinkedList::insert_end(int value){
     Node *end_node = new Node; // Allocate free memory for node
     if(end_node == NULL){      // If address does not exist
-        std::cout << "Cannot allocate memory for end node" << std::endl;
+        std::cerr << "Cannot allocate memory for end node" << std::endl;
         throw;
     }
     Node *current_node = this->head->next;  // Start with the pointer next in head
@@ -70,9 +70,9 @@ void SingleLinkedList::insert_mid(int index, int value){
 
 void SingleLinkedList::display(){
     int count = 1; Node *node = this->head->next; // node points to next of current node
-    std::cout << "Node 0: " << this->head->value << " - points to " << this->head->next << std::endl;
+    std::cerr << "Node 0: " << this->head->value << " - points to " << this->head->next << std::endl;
     while(node != NULL){
-        std::cout << "Node "<< count << ": " << node->value << " - points to " << node->next << std::endl;
+        std::cerr << "Node "<< count << ": " << node->value << " - points to " << node->next << std::endl;
         node = node->next;
         count ++;
     }
@@ -99,7 +99,7 @@ void SingleLinkedList::del(int value){
         current_node = current_node->next;
     }
     if(current_node->next == NULL){
-        std::cout << "Item not found for deletion" << std::endl;
+        std::cerr << "Item not found for deletion" << std::endl;
         return;
     }
     // If value is found (in next node)
@@ -109,7 +109,7 @@ void SingleLinkedList::del(int value){
 }
 
 int main(){
-    std::cout << "Program init" << std::endl;
+    std::cerr << "Program init" << std::endl;
     SingleLinkedList linked_list;
     // Insert tests
     linked_list.insert_begin(8);
@@ -119,10 +119,10 @@ int main(){
     linked_list.insert_mid(4, 10);
     linked_list.display();
     // Search test
-    std::cout << std::endl << "Search test" << std::endl;
-    std::cout << "Val 9 is in node address: " << linked_list.search(9) << std::endl;
+    std::cerr << std::endl << "Search test" << std::endl;
+    std::cerr << "Val 9 is in node address: " << linked_list.search(9) << std::endl;
     // Delete test
-    std::cout << std::endl << "Delete test" << std::endl;
+    std::cerr << std::endl << "Delete test" << std::endl;
     linked_list.del(9);
     linked_list.display();
     linked_list.del(7);  // delete head

@@ -72,17 +72,17 @@ void DoublyLinkedSorted::insert(Node node){
 
 void DoublyLinkedSorted::display(){
     if(head == NULL){
-        std::cout << "List is empty" << std::endl;
+        std::cerr << "List is empty" << std::endl;
         return;
     }
     Node *current_node = this->head;
-    std::cout << current_node->ip_index;
+    std::cerr << current_node->ip_index;
     // Recorrer en una direccion
     while(current_node->next != NULL){
         current_node = current_node->next;
-        std::cout << " -> " << current_node->ip_index;
+        std::cerr << " -> " << current_node->ip_index;
     }
-    std::cout << std::endl;
+    std::cerr << std::endl;
 }
 
 Node* DoublyLinkedSorted::search(long long *ip_val){
@@ -102,10 +102,10 @@ Node* DoublyLinkedSorted::getHead(){
 }
 
 long long* userInputs(){  // Returns a pointer to the start of an array containing the start and the end values to search
-    std::cout << " BIENVENIDO AL SISTEMA DE REGISTRO DE ACCESOS\n";
-    std::cout << "---------------------------------------------\n";
-    std::cout << "Favor de ingresar direcciones ip de inicio y fin para la búsqueda, formato (###.###.###.###)\n";
-    std::cout << "Direccion de inicio: ";
+    std::cerr << " BIENVENIDO AL SISTEMA DE REGISTRO DE ACCESOS\n";
+    std::cerr << "---------------------------------------------\n";
+    std::cerr << "Favor de ingresar direcciones ip de inicio y fin para la búsqueda, formato (###.###.###.###)\n";
+    std::cerr << "Direccion de inicio: ";
     // Array declared static to use it outside the function call
     static long long input_values[2];
     static long long ip_val_start, ip_val_end;         // Aux to store the value of the ip
@@ -113,7 +113,7 @@ long long* userInputs(){  // Returns a pointer to the start of an array containi
     
     // Get and prepare string inputs
     std::cin >> input_start;
-    std::cout << "Direccion final: ";
+    std::cerr << "Direccion final: ";
     std::cin >> input_end;
     for(std::string::iterator it = input_start.begin(); it != input_start.end(); it++){  // Start
         if(*it == '.'){*it = ' ';}   // Replace . with blank spaces to use operators >> in stringstream

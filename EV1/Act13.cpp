@@ -50,30 +50,30 @@ void bubble_sort(vector<Data> &vect){
 }  
 
 void get_inputs(int &mes_inicio, int &dia_inicio, int &hora_inicio, int &min_inicio, int &sec_inicio, int &mes_fin, int &dia_fin, int &hora_fin, int &min_fin, int &sec_fin){
-  cout << "¡Bienvenidos al registro de reportes!" << endl;
-  cout << "INICIO DE BUSQUEDA\n";
-  cout << "Junio = 1 / Julio = 2 / Agosto = 3 / Septiembre = 4 / Octubre = 5\n";
-  cout << "Seleccionar numero de mes (1-5): ";
+  cerr << "¡Bienvenidos al registro de reportes!" << endl;
+  cerr << "INICIO DE BUSQUEDA\n";
+  cerr << "Junio = 1 / Julio = 2 / Agosto = 3 / Septiembre = 4 / Octubre = 5\n";
+  cerr << "Seleccionar numero de mes (1-5): ";
   cin >> mes_inicio;
-  cout << "Seleccionar numero dia: (1 - 30): ";
+  cerr << "Seleccionar numero dia: (1 - 30): ";
   cin >> dia_inicio;
-  cout << "Seleccionar numero de hora: ";
+  cerr << "Seleccionar numero de hora: ";
   cin >> hora_inicio;
-  cout << "Seleccionar numero de minuto: ";
+  cerr << "Seleccionar numero de minuto: ";
   cin >> min_inicio;
-  cout << "Seleccionar numero de segundo: ";
+  cerr << "Seleccionar numero de segundo: ";
   cin >> sec_inicio;
   
-  cout << "\nFIN DE BUSQUEDA\n";
-  cout << "Seleccionar numero de mes (1-5): ";
+  cerr << "\nFIN DE BUSQUEDA\n";
+  cerr << "Seleccionar numero de mes (1-5): ";
   cin >> mes_fin;
-  cout << "Seleccionar numero dia: (1 - 30): ";
+  cerr << "Seleccionar numero dia: (1 - 30): ";
   cin >> dia_fin;
-  cout << "Seleccionar numero de hora: ";
+  cerr << "Seleccionar numero de hora: ";
   cin >> hora_fin;
-  cout << "Seleccionar numero de minuto: ";
+  cerr << "Seleccionar numero de minuto: ";
   cin >> min_fin;
-  cout << "Seleccionar numero de segundo: ";
+  cerr << "Seleccionar numero de segundo: ";
   cin >> sec_fin;
 }
 
@@ -205,11 +205,11 @@ int main(){
   for(int i = found1; i < found2 + 1; i++){
     final.push_back(unificado[i]);
   }
-  cout << found2 - found1 << endl;
+  cerr << found2 - found1 << endl;
   for(Data k : final){
     OutputFile << k.message << endl;
   }
-  cout << "\nProgram exited correctly";
+  cerr << "\nProgram exited correctly";
   // Cerrar archivos
   OutputFile.close();
   InputFile.close();

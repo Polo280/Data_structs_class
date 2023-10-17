@@ -238,7 +238,7 @@ int main(){
     bool exists = false;
     tree.ancestors(element, ancestors, exists);
     if(exists){
-        for(std::vector<int>::iterator it = ancestors.begin(); it != ancestors.end(); it ++){
+        for(auto it = ancestors.begin(); it != ancestors.end(); ++it){
             std::cerr << *it << " - ";
         }
     }else{std::cerr << "Element does not exist" << std::endl;}
