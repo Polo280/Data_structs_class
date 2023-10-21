@@ -1,0 +1,90 @@
+PORTS WITH MOST ACCESSES
+Port: 6951
+Times Accessed: 10
+MESSAGES 
+Sep 14 10:47:04 497.17.462.46:6951 Failed password for admin
+Jun 7 23:04:49 411.37.484.95:6951 Failed password for illegal user test
+Jul 7 10:36:02 736.48.842.87:6951 Failed password for root
+Aug 21 03:17:41 195.71.876.20:6951 Illegal user
+Aug 25 16:12:51 83.95.8.68:6951 Failed password for illegal user guest
+Jul 5 14:46:48 112.64.594.52:6951 Failed password for illegal user guest
+Jun 5 08:03:48 320.77.283.95:6951 Failed password for illegal user test
+Oct 4 11:41:11 709.27.316.49:6951 Failed password for admin
+Jun 8 18:21:29 176.96.857.89:6951 Failed password for root
+Aug 21 02:04:57 249.24.737.10:6951 Failed password for illegal user guest
+
+
+Port: 6870
+Times Accessed: 12
+MESSAGES 
+Jul 24 06:19:16 338.86.656.36:6870 Failed password for admin
+Sep 29 09:54:13 756.12.830.15:6870 Failed password for root
+Jun 23 00:36:18 694.19.481.60:6870 Failed password for illegal user test
+Jun 17 19:55:23 22.14.765.13:6870 Failed password for illegal user guest
+Jul 7 17:40:27 333.53.500.6:6870 Failed password for root
+Sep 13 05:20:34 747.11.69.64:6870 Failed password for illegal user test
+Jun 8 01:37:19 304.20.588.56:6870 Illegal user
+Sep 5 06:13:28 822.18.113.41:6870 Failed password for admin
+Jul 30 11:48:42 26.77.805.7:6870 Failed password for illegal user test
+Aug 28 03:37:51 142.75.932.48:6870 Illegal user
+Jun 23 08:29:56 842.67.526.7:6870 Failed password for illegal user guest
+Aug 29 17:35:26 327.50.672.42:6870 Failed password for illegal user test
+
+
+Port: 6445
+Times Accessed: 13
+MESSAGES 
+Sep 7 17:59:05 18.30.488.95:6445 Illegal user
+Oct 8 04:06:41 676.63.322.12:6445 Illegal user
+Sep 11 13:42:12 392.72.754.52:6445 Failed password for root
+Jun 24 03:09:44 826.14.26.96:6445 Failed password for root
+Aug 19 23:48:44 126.46.766.74:6445 Failed password for illegal user guest
+Jul 9 14:20:22 975.69.685.87:6445 Failed password for admin
+Jun 19 01:19:19 96.50.625.4:6445 Failed password for admin
+Oct 23 21:38:21 718.71.804.69:6445 Failed password for root
+Jul 6 15:57:03 448.94.586.67:6445 Failed password for admin
+Jun 9 03:31:51 546.72.947.17:6445 Illegal user
+Sep 20 06:27:02 842.57.282.73:6445 Illegal user
+Sep 27 14:02:23 179.77.589.78:6445 Failed password for illegal user test
+Jun 12 13:15:00 203.69.591.7:6445 Failed password for root
+
+
+Port: 5525
+Times Accessed: 14
+MESSAGES 
+Jul 13 12:23:33 773.69.326.5:5525 Failed password for root
+Sep 5 21:59:35 687.20.538.79:5525 Illegal user
+Sep 5 17:03:19 77.40.631.83:5525 Failed password for root
+Sep 15 21:19:14 633.95.703.1:5525 Illegal user
+Jul 29 23:05:44 26.20.623.71:5525 Failed password for root
+Jun 5 09:59:35 242.77.639.20:5525 Failed password for illegal user test
+Aug 14 11:08:24 107.10.407.39:5525 Failed password for illegal user test
+Jun 12 15:37:19 595.69.155.22:5525 Failed password for admin
+Aug 6 18:22:15 490.42.559.96:5525 Failed password for illegal user guest
+Oct 5 21:45:04 276.27.429.56:5525 Illegal user
+Sep 4 07:45:32 91.64.321.45:5525 Failed password for root
+Oct 22 00:25:21 495.49.646.62:5525 Failed password for illegal user test
+Jun 13 10:10:33 535.88.300.1:5525 Failed password for root
+Jun 28 07:38:41 236.33.510.58:5525 Illegal user
+
+
+Port: 6170
+Times Accessed: 15
+MESSAGES 
+Sep 26 03:47:29 230.33.53.59:6170 Failed password for admin
+Sep 3 23:42:33 937.72.625.19:6170 Failed password for illegal user guest
+Oct 18 18:16:30 90.28.654.26:6170 Failed password for root
+Aug 12 05:26:14 365.26.509.53:6170 Failed password for root
+Sep 3 18:15:47 306.98.945.11:6170 Failed password for admin
+Jun 24 12:03:27 452.91.940.89:6170 Failed password for admin
+Jun 26 20:40:45 682.90.524.94:6170 Illegal user
+Sep 4 04:18:56 88.86.539.35:6170 Failed password for illegal user test
+Jul 24 23:33:35 917.56.870.54:6170 Illegal user
+Sep 27 00:33:31 355.24.263.3:6170 Failed password for root
+Jul 10 01:15:51 26.90.994.43:6170 Failed password for root
+Aug 7 04:02:03 551.41.745.87:6170 Failed password for illegal user guest
+Jul 12 09:27:20 432.25.264.17:6170 Failed password for root
+Aug 3 02:45:14 475.3.160.9:6170 Failed password for illegal user guest
+Jun 8 21:45:58 158.89.136.98:6170 Failed password for admin
+
+
