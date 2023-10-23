@@ -128,7 +128,7 @@ int main(){
     std::cerr << "\n";
     tree.displayLevels();
     // Search 
-    int element = 31;
+    int element = 1;
     Node* search_res = tree.search(element);
     std::cerr << "\nElement " << element << " is in memory address " << search_res << "\n";
     // Get number of nodes
