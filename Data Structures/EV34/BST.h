@@ -1,21 +1,25 @@
 #include <iostream>
 #include <queue>
+#include <map>
 #include "Node.h"
 
+// Binary Search Tree class
 class BST{
     private:
         int num_nodes;
         Node* root;
         // Recursive methods
         void postOrderPriv(Node *&);
-        void insertPriv(Node *&, int &);
+        void insertPriv(Node *&, Node *&);
         void deletePriv(Node *&);
         Node* searchPriv(Node *&, int &);
+        void mostAccessesPriv(Node*&, std::map<int, Node*> &);
     public:
         Node* search(int &key){return searchPriv(this->root, key);};
+        void searchMaxAccesses(std::map<int, Node*> &aux_map){mostAccessesPriv(this->root, aux_map);};
         void postOrder(){postOrderPriv(this->root);};
         void displayLevels();
-        void insert(Node *&node){insertPriv(this->root, node->key); ++num_nodes;};
+        void insert(Node *&node){insertPriv(this->root, node); ++num_nodes;};
         bool isEmpty();
         void deleteAll(){deletePriv(this->root);};
         int getNodeCount();
@@ -24,20 +28,19 @@ class BST{
 };
 
 
-void BST::insertPriv(Node *&current, int &key){
+void BST::insertPriv(Node *&current, Node *& node){
     // Correct node is available to insert
     if(current == nullptr){
-        current = new Node;
-        current->key = key;
+        current = node;
         // std::cerr << "Node inserted correctly " << key << " at location " << current << "\n";
         return;
     }
     // Manage recursion
-    if(key < current->key){
-        insertPriv(current->left, key);
+    if(node->key < current->key){
+        insertPriv(current->left, node);
     }
-    else if(key > current->key){
-        insertPriv(current->right, key);
+    else if(node->key > current->key){
+        insertPriv(current->right, node);
     }
     return;
 }
@@ -100,5 +103,20 @@ Node* BST::searchPriv(Node *&node, int &key){
     }
     else{
         return node;
+    }
+}
+
+void BST::mostAccessesPriv(Node*& current, std::map<int, Node*> &aux_map){
+    // Base case
+    if(current == nullptr) return;
+    // Recursion
+    mostAccessesPriv(current->left, aux_map);
+    mostAccessesPriv(current->right, aux_map);
+    // If map size is less than 5 we can add whatever value to it 
+    if(aux_map.size() < 5){
+        aux_map[current->count] = current;
+    }else if (aux_map.size() >= 5 && current->count > aux_map.begin()->first){  // If current node count is greater than one inside max_ports map
+        aux_map.erase(aux_map.begin());
+        aux_map[current->count] = current;
     }
 }
