@@ -4,67 +4,68 @@
 #include <cstdlib>
 #include <list>
 #include <vector>
-#include <queue>
 
 
 class Graph{
     private:
         std::list<int> *adj_list;
         int num_vertex, num_edges;
+        bool *visited;
     public:
         // Constructor y destructor 
-        Graph(int vertex) : num_vertex(vertex), adj_list(new std::list<int> [vertex]){};
+        Graph(int vertex) : num_vertex(vertex), adj_list(new std::list<int> [vertex]), visited(new bool[vertex]){};
         // Custom functions
         void addEdge(int, int);
         void DFS(int);
         void BFS(int);
         void showGraph();
+        void resetVisited();
         // Getters & setters
         void setAdjList(std::list<int> adjList2){*adj_list = adjList2;};
 };
 
-void Graph::BFS(int startVertex) {
-    std::vector<bool> visited(num_vertex, false);
-    std::queue<int> queue;
-
-    visited[startVertex] = true;
-    queue.push(startVertex);
-
-    while (!queue.empty()) {
-        int currentVertex = queue.front();
-        queue.pop();
-
-        std::cout << "Visited: " << currentVertex << " ";
-        for (std::list<int>::iterator i = adj_list[currentVertex].begin(); i != adj_list[currentVertex].end(); ++i) {
-            int adjVertex = *i;
-            if (!visited[adjVertex]) {
-                visited[adjVertex] = true;
-                queue.push(adjVertex);
-            }
-        }
-    }
-    std::cout << std::endl;
+void Graph::resetVisited() {
+    for (int i = 0; i < num_vertex; i++)
+        visited[i] = false;
 }
 
-void Graph::DFS(int startVertex) {
-    static std::vector<bool> visited(num_vertex, false);
-
-    visited[startVertex] = true;
-    std::cout << "Visited: " << startVertex << " ";
-
-    for (std::list<int>::iterator i = adj_list[startVertex].begin(); i != adj_list[startVertex].end(); ++i) {
-        int adjVertex = *i;
-        if (!visited[adjVertex]) {
-            DFS(adjVertex);
-        }
-    }
-}
-
-// Add an edge between two nodes
 void Graph::addEdge(int n1, int n2){
     this->adj_list[n1].push_back(n2);
 }
 
+void Graph::BFS(int startVertex)
+{
+    visited[startVertex] = true;
+    std::list<int> queue;
+    queue.push_back(startVertex);
+
+    while (!queue.empty())
+    {
+        int currVertex = queue.front();
+        std::cout << currVertex << " ";
+        queue.pop_front();
+
+        for (auto i : this->adj_list[currVertex])
+        {
+            if (!visited[i])
+            {
+                visited[i] = true;
+                queue.push_back(i);
+            }
+        }
+    }
+}
+
+void Graph::DFS(int vertex) {
+    this->visited[vertex] = true;
+    std::list<int> adjVertex = this->adj_list[vertex];
+    std::cout << vertex << " ";
+    for (auto i : adjVertex) {
+        if (!this->visited[i]) {
+            DFS(i);
+        }
+    }
+}
 
 /**
 @brief Function to generate automatically random values for graph
@@ -79,6 +80,7 @@ void loadGraph(int nodes, int edges, std::list<int> *&adjList){
         (adjList + i)->push_back(val);
         node_vect.push_back(&(adjList + i)->front());
     }
+
     int current_edges = 0;
     // Add edges randomly
     for(int i=0; i < nodes; ++i){
@@ -88,13 +90,22 @@ void loadGraph(int nodes, int edges, std::list<int> *&adjList){
         }else{
             connections = rand() % (edges - current_edges);
         }
-        for(int k = 0; k < connections; ++k){
+        for(int k = 0; k < connections; ++k){ // set random number of edges on that node
+            bool exists = false;
             int* connection = node_vect[rand() % nodes];
             while(connection == &(adjList + i)->front()){
                 connection = node_vect[rand() % nodes]; // To not connect it to itself
             }
-            (adjList + i)->push_back(*connection);
-            ++current_edges;
+            for(auto it : *(adjList + i)){
+                if (it == *connection){
+                    exists = true;
+                    break;
+                }
+            }
+            if(!exists){
+                (adjList + i)->push_back(*connection);
+                ++current_edges;
+            }
         }
     }
 }
@@ -116,6 +127,10 @@ int main(){
         }
         std::cout << "\n";
     }
+
+    Graph g1(num_vertex);
+    g1.setAdjList(*adjList);
+    // g1.DFS(34);
 
     std::cout << "\n";
     return EXIT_SUCCESS;
