@@ -1,10 +1,11 @@
 /* A basic implementation for a graph data structure
+Jorge Gonzalez
 */
 #include <iostream>
 #include <cstdlib>
 #include <list>
 #include <vector>
-
+#include <algorithm>
 
 class Graph{
     private:
@@ -23,45 +24,40 @@ class Graph{
         void resetVisited();
 };
 
+// Time complexity : O(n^2) because it has a nested loop in which time increases exponentially with the input size
 void Graph::showGraph(){
-    std::cout << "Graph nodes are: ";
-    for(int i=0; i < num_vertex; ++i){
-        std::cout << (adj_list + i)->front() << " - ";
+    for (int i = 0; i < this->num_vertex; i++)
+    {
+        std::cout << "\nVertex " << i << ":";
+        for (auto x : this->adj_list[i])
+            std::cout << " -> " << x;
     }
-    std::cout << "\nGraph edges are: \n";
-    for(int i=0; i < num_vertex; ++i){
-        for(auto it : *(adj_list +  i)){
-            std::cout << it << " - ";
-        }
-        std::cout << "\n";
-    }
+    std::cout << "\n";
 }
 
+// Time complexity = O(n) because its a loop which increases with the number of vertex
 void Graph::resetVisited() {
     for (int i = 0; i < num_vertex; i++)
         visited[i] = false;
 }
 
+// Time complexity: O(1) complexity is constant in every case
 void Graph::addEdge(int n1, int n2){
     this->adj_list[n1].push_back(n2);
+    this->adj_list[n2].push_back(n1);
 }
 
-void Graph::BFS(int startVertex)
-{
-    visited[startVertex] = true;
+// Time complexity : O(V + E) 
+void Graph::BFS(int startVertex) {
     std::list<int> queue;
+    visited[startVertex] = true;
     queue.push_back(startVertex);
-
-    while (!queue.empty())
-    {
+    while (!queue.empty()) {
         int currVertex = queue.front();
         std::cout << currVertex << " ";
         queue.pop_front();
-
-        for (auto i : this->adj_list[currVertex])
-        {
-            if (!visited[i])
-            {
+        for (auto i : adj_list[currVertex]) {
+            if (!visited[i]) {
                 visited[i] = true;
                 queue.push_back(i);
             }
@@ -69,67 +65,56 @@ void Graph::BFS(int startVertex)
     }
 }
 
+// Time complexity: O(V + E) because its very similar to BFS
 void Graph::DFS(int vertex) {
-    this->visited[vertex] = true;
-    std::list<int> adjVertex = this->adj_list[vertex];
+    visited[vertex] = true;
     std::cout << vertex << " ";
-    for (auto i : adjVertex) {
-        if (!this->visited[i]) {
+    for (auto i : adj_list[vertex]) {
+        if (!visited[i]) {
             DFS(i);
         }
     }
 }
 
-/**
-@brief Function to generate automatically random values for graph
-@param nodes number of nodes to store in the graph
-@param edges number of edges in the graph
-*/
-void Graph::loadGraph(int nodes, int edges){
-    std::vector<int*> node_vect;
-    // Add vertex at start of every list
-    for(int i=0;i < nodes; ++i){
-        int val = rand() % 50;
-        (adj_list + i)->push_back(val);
-        node_vect.push_back(&(adj_list + i)->front());
+// 
+void Graph::loadGraph(int nodes, int edges) {
+    // Init each vertex adj list
+    for (int i = 0; i < nodes; ++i) {
+        adj_list[i] = std::list<int>();
     }
-
-    int current_edges = 0;
-    // Add edges randomly
-    for(int i=0; i < nodes; ++i){
-        int connections = 0;
-        if(i >= nodes - 1){
-            connections = edges - current_edges;
-        }else{
-            connections = rand() % (edges - current_edges);
+    for (int i = 0; i < edges; ++i) {
+        int n1 = rand() % this->num_vertex; 
+        int n2 = rand() % this->num_vertex; 
+        // Verify that edge doesnt exist yet, if it exists keep generating values
+        while (n1 == n2 || std::find(adj_list[n1].begin(), adj_list[n1].end(), n2) != adj_list[n1].end()) {
+            n1 = rand() % this->num_vertex;
+            n2 = rand() % this->num_vertex;
         }
-        for(int k = 0; k < connections; ++k){ // set random number of edges on that node
-            bool exists = false;
-            int* connection = node_vect[rand() % nodes];
-            while(connection == &(adj_list + i)->front()){
-                connection = node_vect[rand() % nodes]; // To not connect it to itself
-            }
-            for(auto it : *(adj_list + i)){
-                if (it == *connection){
-                    exists = true;
-                    break;
-                }
-            }
-            if(!exists){
-                (adj_list + i)->push_back(*connection);
-                ++current_edges;
-            }
-        }
+        // Create edge (undirected)
+        addEdge(n1, n2);
     }
 }
 
 
 int main(){
-    const int num_vertex = 5; const int edges = 10;
+    int num_vertex; int edges;
+    // Inputs
+    std::cout << "Pruebas Grafos\n";
+    std::cout << "Numero de vertices (nodos): ";
+    std::cin >> num_vertex;
+    std::cout << "Numero de aristas: ";
+    std::cin >> edges;
+
     Graph g1(num_vertex, edges);
     g1.showGraph();
-    // g1.DFS(34);
-
+    std::cout << "Depht First Search = ";
+    g1.DFS(rand() % num_vertex);
+    g1.resetVisited();
     std::cout << "\n";
+    std::cout << "Breadth First Search = ";
+    g1.BFS(rand() % num_vertex);
+    g1.resetVisited();
+    std::cout << "\n";
+
     return EXIT_SUCCESS;
 }
