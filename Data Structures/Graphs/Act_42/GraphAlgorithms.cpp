@@ -11,24 +11,63 @@ Jorge Gonzalez
 
 struct Node{
     int value; 
-    Node(int val) : value(val){};
+    bool visited;
+    Node(int val) : value(val), visited(false){};
 };
 
 class Graph{
     private:
         int num_vertex = 0;
         int num_edges = 0;
+        bool is_DAG = true;
         Node* root;
         std::vector<std::list<Node*>> adjacencyList;
-        void loadGraph();
+        std::vector<Node*> visited;
+        std::vector<Node*> node_stack;
+        void loadGraph(void);
     public:
-        Graph(int vertex, int edges) : num_vertex(vertex), num_edges(edges){loadGraph();};  // Create and load graph
-        void display();
+        Graph(int vertex, int edges) : num_vertex(vertex), num_edges(edges){
+            loadGraph();
+            node_stack.push_back(this->root);
+            checkDAG(this->root);
+            std::cout << "Is dag = " << this->is_DAG << "\n";
+        };  // Create and load graph
+        void display(void);
+        void checkDAG(Node*);
+        void resetVisited(void);
 };
 
-void Graph::loadGraph(){
+/**
+ * @brief A function to reset all values used in DFS and BFS.
+ * Time complexity -> Grows linearly with input size since it has to reset each vertex = O(V)
+ * @param None
+*/
+void Graph::resetVisited(void){
+    while(this->visited.size() > 0){
+        Node* back = this->visited.back();
+        back->visited = false;
+        this->visited.pop_back();
+    }
+}
+
+/**
+ * @brief A function to display the adjacency list. Time complexity: Linear since it prints each vertex = O(V)
+ * @param None
+*/
+void Graph::display(void){
+    // Display the graph
+    for(int l=0; l < this->adjacencyList.size(); ++l){
+        std::cout << "List " << l << ": ";
+        for(Node* n : this->adjacencyList[l]){
+            std::cout << n->value << " - ";
+        }
+        std::cout << "\n";
+    }
+}
+
+void Graph::loadGraph(void){
     // Feed current time to random number generator seed
-    srand((unsigned int) time(NULL));
+    // srand((unsigned int) time(NULL));
 
     // Load random nodes
     for(int vertex=0; vertex < this->num_vertex; ++vertex){
@@ -62,29 +101,56 @@ void Graph::loadGraph(){
             while(node_to_edge == adjacencyList[list_index].front() || std::find(adjacencyList[list_index].begin(), adjacencyList[list_index].end(), node_to_edge) != adjacencyList[list_index].end() || node_to_edge == this->root){
                 node_to_edge = adjacencyList[rand() %  this->num_vertex].front();
             }
+
+            // Add the connection
             adjacencyList[list_index].push_back(node_to_edge);
-            // std::cout << "Established a connection node " << selected_list.front()-> value << "- " << node_to_edge->value << "\n";
+            
         }
     }
 }
 
-void Graph::display(){
-    // Display the graph
-    for(int l=0; l < this->adjacencyList.size(); ++l){
-        std::cout << "List " << l << ": ";
-        for(Node* n : this->adjacencyList[l]){
-            std::cout << n->value << " - ";
-        }
-        std::cout << "\n";
+void Graph::checkDAG(Node* current_node){  // Asume root is already in node stack
+    // Check if stack is already empty
+    if(this->node_stack.size() < 1){
+        return;
     }
+
+    // Check if the current node was already visited, in case it is the graph isnt a DAG 
+    if(current_node->visited == true){
+        this->is_DAG = false;
+        return;
+    }
+    // Mark as visited 
+    current_node->visited = true;
+    this->visited.push_back(current_node);
+    this->node_stack.pop_back();  // Eliminate this node from stack
+    
+    // Get the current node adjacency list & add all the nodes in it to the aux stack to keep track of nodes to visit
+    for(int list_aux = 0; list_aux < adjacencyList.size(); ++list_aux){
+        // Find in which list is the current node
+        // auto it = std::find(adjacencyList[list_aux].begin(), adjacencyList[list_aux].end(), current_node);
+        // int list_index = std::distance(adjacencyList[list_aux].begin(), it);   // Get the index of the list of the current node
+
+        if(current_node == adjacencyList[list_aux].front()){
+            
+            // Iterate through individual nodes inside the list
+            for(auto node : adjacencyList[list_aux]){
+                if(node != current_node){    // Add all the nodes except for the first one(which is only an indicator)
+                    this->node_stack.push_back(node);
+                }
+            }
+        }
+    }
+    // Send last element
+    checkDAG(this->node_stack.back());
+    return;
 }
 
 int main(void){
     // Create a new graph and load
-    int num_vertex = 8; 
-    int num_edges = 10;
+    int num_vertex = 3; 
+    int num_edges = 2;
     Graph graph(num_vertex, num_edges);
     graph.display();
-
     return EXIT_SUCCESS;
 }
