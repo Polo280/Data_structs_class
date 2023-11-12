@@ -19,7 +19,7 @@ class Graph{
     private:
         int num_vertex = 0;
         int num_edges = 0;
-        bool is_DAG = true;
+        bool is_DAG = false;
         Node* root;
         std::vector<std::list<Node*>> adjacencyList;
         std::vector<Node*> visited;
@@ -27,10 +27,15 @@ class Graph{
         void loadGraph(void);
     public:
         Graph(int vertex, int edges) : num_vertex(vertex), num_edges(edges){
-            loadGraph();
-            node_stack.push_back(this->root);
-            checkDAG(this->root);
-            std::cout << "Is dag = " << this->is_DAG << "\n";
+            // while(!this->is_DAG){
+                // Feed current time to random number generator seed
+                srand((unsigned int) time(NULL));
+                loadGraph();
+                this->node_stack.push_back(this->root);
+                checkDAG(this->root);
+                resetVisited();
+            // }
+            std::cout << "Is dag: " << this->is_DAG << "\n";
         };  // Create and load graph
         void display(void);
         void checkDAG(Node*);
@@ -66,9 +71,6 @@ void Graph::display(void){
 }
 
 void Graph::loadGraph(void){
-    // Feed current time to random number generator seed
-    // srand((unsigned int) time(NULL));
-
     // Load random nodes
     for(int vertex=0; vertex < this->num_vertex; ++vertex){
         Node *node = new Node(rand() % 50);
@@ -90,28 +92,27 @@ void Graph::loadGraph(void){
             Node* node_to_edge = adjacencyList[rand() %  this->num_vertex].front();
             while(node_to_edge == this->root){
                 Node* node_to_edge = adjacencyList[rand() %  this->num_vertex].front();
-            }
+        }
             this->adjacencyList[root_index].push_back(node_to_edge);  // Add connection to root 
         }else{
-            int list_index = rand() % this->num_vertex;
-            std::list<Node*> selected_list = adjacencyList[list_index];   // Selected list to establish an edge with its first node
-            Node* node_to_edge = adjacencyList[rand() %  this->num_vertex].front();   // Node to edge
+            int list_index;
+            Node* node_to_edge;
+            do {
+                // Check if it's not connecting to itself, if the connection doesn't exist, and it's not the root
+                list_index = rand() % this->num_vertex; // Randomly select a list
+                node_to_edge = adjacencyList[rand() % this->num_vertex].front(); // Randomly select a node to connect
 
-            // Check if node isnt linking to itself and if the connection already exists or if the chosen node is the root
-            while(node_to_edge == adjacencyList[list_index].front() || std::find(adjacencyList[list_index].begin(), adjacencyList[list_index].end(), node_to_edge) != adjacencyList[list_index].end() || node_to_edge == this->root){
-                node_to_edge = adjacencyList[rand() %  this->num_vertex].front();
-            }
-
+            } while(node_to_edge == adjacencyList[list_index].front() || (std::find(adjacencyList[list_index].begin(), adjacencyList[list_index].end(), node_to_edge) != adjacencyList[list_index].end()) || node_to_edge == this->root);
             // Add the connection
             adjacencyList[list_index].push_back(node_to_edge);
-            
         }
     }
 }
 
 void Graph::checkDAG(Node* current_node){  // Asume root is already in node stack
     // Check if stack is already empty
-    if(this->node_stack.size() < 1){
+    if(current_node == nullptr || current_node == NULL){
+        this->is_DAG = true;
         return;
     }
 
@@ -128,11 +129,7 @@ void Graph::checkDAG(Node* current_node){  // Asume root is already in node stac
     // Get the current node adjacency list & add all the nodes in it to the aux stack to keep track of nodes to visit
     for(int list_aux = 0; list_aux < adjacencyList.size(); ++list_aux){
         // Find in which list is the current node
-        // auto it = std::find(adjacencyList[list_aux].begin(), adjacencyList[list_aux].end(), current_node);
-        // int list_index = std::distance(adjacencyList[list_aux].begin(), it);   // Get the index of the list of the current node
-
         if(current_node == adjacencyList[list_aux].front()){
-            
             // Iterate through individual nodes inside the list
             for(auto node : adjacencyList[list_aux]){
                 if(node != current_node){    // Add all the nodes except for the first one(which is only an indicator)
@@ -148,8 +145,8 @@ void Graph::checkDAG(Node* current_node){  // Asume root is already in node stac
 
 int main(void){
     // Create a new graph and load
-    int num_vertex = 3; 
-    int num_edges = 2;
+    int num_vertex = 5; 
+    int num_edges = 10;
     Graph graph(num_vertex, num_edges);
     graph.display();
     return EXIT_SUCCESS;
