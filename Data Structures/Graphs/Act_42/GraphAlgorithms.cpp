@@ -5,6 +5,7 @@ Jorge Gonzalez
 
 #include <iostream>
 #include <list>
+#include <queue>
 #include <vector>
 #include <cstdlib>
 #include <algorithm>
@@ -12,6 +13,7 @@ Jorge Gonzalez
 struct Node{
     int value; 
     bool visited;
+    bool color;
     Node(int val) : value(val), visited(false){};
 };
 
@@ -20,27 +22,99 @@ class Graph{
         int num_vertex = 0;
         int num_edges = 0;
         bool is_DAG = false;
-        Node* root;
+        Node* root;  // Not a tree, but a node that doesnt have any edges pointing to it 
         std::vector<std::list<Node*>> adjacencyList;
         std::vector<Node*> visited;
         std::vector<Node*> node_stack;
         void loadGraph(void);
     public:
         Graph(int vertex, int edges) : num_vertex(vertex), num_edges(edges){
-            // while(!this->is_DAG){
                 // Feed current time to random number generator seed
                 srand((unsigned int) time(NULL));
                 loadGraph();
                 this->node_stack.push_back(this->root);
-                checkDAG(this->root);
-                resetVisited();
-            // }
-            std::cout << "Is dag: " << this->is_DAG << "\n";
-        };  // Create and load graph
+        };
+        ~Graph(){
+        };
         void display(void);
         void checkDAG(Node*);
         void resetVisited(void);
+        bool isBipartite(Node*);
+        bool isTree(void);
+        void BFS(Node*);
+        Node* getRoot(){return this->root;};
 };
+
+/**
+ * @brief A function to check whether the graph can be classified as bipartite. Time complexity = O(V + E) since its quite the same algorithm as BFS
+ * @param None
+*/
+bool Graph::isBipartite(Node* start_node){
+    // std::vector<bool> color(this->num_vertex);
+    start_node->color = 0;
+    start_node->visited = true;
+    this->visited.push_back(start_node);
+
+    std::list<Node*> queue;
+    queue.push_back(start_node);
+
+    while(!queue.empty()){
+        Node* current = queue.front();
+        int list_index;
+
+        for(int i=0; i < adjacencyList.size(); ++i){
+            if(adjacencyList[i].front() == current){
+                list_index = i;
+                break;
+            }
+        }
+        queue.pop_front();
+        for(auto it : adjacencyList[list_index]){
+            if(!it->visited){
+                it->color = !current->color;
+                it->visited = true;
+                queue.push_back(it);
+            }
+            else if(current->color == it->color){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/**
+ * @brief A function to apply Breadth First Search (BFS) algorithm to graph. Time complexity: O(V + E) since its a standard complexity for BFS algorithms
+ * @param None
+*/
+void Graph::BFS(Node* start_node){
+    start_node->visited = true;
+    this->visited.push_back(start_node);
+    std::list<Node*> queue;
+    queue.push_back(start_node);
+
+    while(!queue.empty()){
+        Node* current = queue.front();
+        int list_index;
+
+        for(int i=0; i < adjacencyList.size(); ++i){
+            if(adjacencyList[i].front() == current){
+                list_index = i;
+                break;
+            }
+        }
+        std::cout << current->value << " - ";
+        queue.pop_front();
+        for(auto it : adjacencyList[list_index]){
+            if(!it->visited){
+                it->visited = true;
+                queue.push_back(it);
+            }
+        }
+
+    }
+    std::cout << "\n";
+}
 
 /**
  * @brief A function to reset all values used in DFS and BFS.
@@ -70,6 +144,27 @@ void Graph::display(void){
     }
 }
 
+/**
+ * @brief A function to check whether the graph can be considered a tree. Time complexity = O(n^2) since it depends in the function checkDAG
+ * @param None
+*/
+bool Graph::isTree(void){
+    // Check DAG updates isDAG value
+    checkDAG(this->root);
+    // If edges > (n-1) vertex it cannot be a tree, also check if is DAG since all trees are DAGs and check node connectivity with visited 
+    if(this->num_edges >= this->num_vertex || !this->is_DAG || this->visited.size() < this->num_vertex){
+        resetVisited();
+        return false;
+    }else{
+        resetVisited();
+        return true;
+    }
+}
+
+/**
+ * @brief A function to load a randomly generated graph. Time complexity is undefined because it depends in the random numbers generated satisying conditions to form a graph
+ * @param None
+*/
 void Graph::loadGraph(void){
     // Load random nodes
     for(int vertex=0; vertex < this->num_vertex; ++vertex){
@@ -79,7 +174,6 @@ void Graph::loadGraph(void){
         this->adjacencyList.push_back(current_list);
     }
 
-    // Ensure the creation of a DAG
     int root_index = (rand() % this->num_vertex);
     Node* root_node = this->adjacencyList[root_index].front();
     this->root = root_node;
@@ -98,7 +192,7 @@ void Graph::loadGraph(void){
             int list_index;
             Node* node_to_edge;
             do {
-                // Check if it's not connecting to itself, if the connection doesn't exist, and it's not the root
+                // Check if its not connecting to itself, if the connection doesnt exist, and its not the root
                 list_index = rand() % this->num_vertex; // Randomly select a list
                 node_to_edge = adjacencyList[rand() % this->num_vertex].front(); // Randomly select a node to connect
 
@@ -109,6 +203,10 @@ void Graph::loadGraph(void){
     }
 }
 
+/**
+ * @brief A function to check if the graph is a DAG. Time complexity in worst case = O(n^2). 
+ * @param current_node Current node to check in recursion
+*/
 void Graph::checkDAG(Node* current_node){  // Asume root is already in node stack
     // Check if stack is already empty
     if(current_node == nullptr || current_node == NULL){
@@ -143,11 +241,22 @@ void Graph::checkDAG(Node* current_node){  // Asume root is already in node stac
     return;
 }
 
+
 int main(void){
     // Create a new graph and load
-    int num_vertex = 5; 
+    int num_vertex = 10; 
     int num_edges = 10;
+    std::cout << "Number of vertex: " << num_vertex << "\n";
+    std::cout << "Number of edges: " << num_edges << "\n";
     Graph graph(num_vertex, num_edges);
     graph.display();
+    // Check if its tree
+    std::cout << "\nIs tree: " << ((graph.isTree()) ? "True" : "False") << "\n";
+    // BFS
+    std::cout << "BFS Search: ";
+    graph.BFS(graph.getRoot());
+    graph.resetVisited();
+    // Bipartite
+    std::cout << "Is bipartite: " << ((graph.isBipartite(graph.getRoot())) ? "True" : "False") << "\n";
     return EXIT_SUCCESS;
 }
