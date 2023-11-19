@@ -17,7 +17,7 @@ class Graph{
     private:
         std::unordered_map<int, std::list<Node*>> adjacencyList; 
         std::vector<Node*> visit_stack;
-        Node* max_out_degree[10];
+        std::vector<Node*> maxOuts;
     public:
         Graph(){};
         void addNode(int);
@@ -25,7 +25,27 @@ class Graph{
         void DFS(Node*);
         void resetAll(void);
         bool node_exists(int);
+        void showGraph(void);
+        void checkOutDegree(void);
 };
+
+/**
+ * @brief A function which displays the adjacency list of the graph
+ * @param None
+*/
+void Graph::showGraph(void){
+    int count = 0;
+    // Print each one of the lists in the unordered map
+    for(auto &pair : this->adjacencyList){
+        std::cout << "Node " << count << ": ";
+        // Iterate in this particular adjacency list
+        for(auto &item : pair.second){
+            std::cout << item->value << " - ";
+        }
+        ++count;
+        std::cout << "\n";
+    }
+}
 
 /**
  * @brief Function used to check whether a node exists inside the graph 
@@ -47,9 +67,20 @@ void Graph::DFS(Node* current_node){
     // If current node is already visited dont do anything 
     if (current_node->visited){return;}
 
+    // Delete this node from stack and add its adjacents
+    std::cout << current_node->value << " - ";  // Print its value
     current_node->visited = true;
     this->visit_stack.pop_back();
-    
+
+    // Find the adjacency list of the node
+    for(auto &it : this->adjacencyList){
+        if(it.first == current_node->value){
+            for(int i=1; i < it.second.size(); ++i){
+                // Add each one of adjacents into stack
+                this->visit_stack.push_back(*it.second.begin() + i);
+            }
+        }
+    }
 }
 
 /**
@@ -64,15 +95,25 @@ void Graph::addEdge(int val1, int val2){
 
     // Get the singular adjacency list for node 1
     auto it = this->adjacencyList.find(val1);
-    // Update out degree counter 
-    it->second.front()->out_degree ++;
 
-    // Insert node 2
+    // Get node 2 address
     auto it2 = this->adjacencyList.find(val2);
-    Node* node2 = it->second.front();   // Get node 2 with that key value memory address so we can edge Node - Node correctly 
+    Node* node2 = it2->second.front();   // Get node 2 with that key value memory address so we can edge Node - Node correctly 
 
-    // Edge
-    it->second.push_back(node2);
+    // Check if edge already exists and update flag
+    bool flag = false;
+    for(auto l_iter : it->second){
+        if(l_iter->value == node2->value){flag = true;}
+    }
+
+    // If it doesnt exists make the edge
+    if(!flag){
+        // Edge
+        it->second.push_back(node2);
+        // Update out degree counter of first node
+        it->second.front()->out_degree ++;
+    }
+    return;
 }
 
 /**
@@ -107,13 +148,81 @@ void Graph::resetAll(void){
     }
 }
 
+void mergeSort(std::vector<Node*> &array, int left, int right){
+    // Management of base case
+    if(left >= right){return;}
 
-void mergeSort(Node** &node_array, ){
+    // Get in the middle of the array
+    int mid = left + (right - left) / 2;
+
+    // Recursion to divide 
+    mergeSort(array, left, mid);
+    mergeSort(array, mid + 1, right);
+
+    // Merge section
+    int s1 = mid - left + 1;
+    int s2 = right - mid;
+    std::vector<Node*> left_vect(s1), right_vect(s2);
+    
+    // Add values to vectors
+    for(int i=0; i < s1; ++i){
+        left_vect[i] = array[left + i];
+    }
+    for(int i=0; i < s2; ++i){
+        right_vect[i] = array[mid + i + 1];
+    }
+
+    // Finally sort them in the original array (only if the 2 conditions occur it enters in the loop)
+    int count1 = 0, count2 = 0; int array_index = left;
+    while(count1 < s1 && count2 < s2){
+        if(left_vect[count1]->out_degree < right_vect[count2]->out_degree){
+            array[array_index] = left_vect[count1];
+            ++count1;
+        }else{
+            array[array_index] = right_vect[count2];
+            ++count2;
+        }
+        ++array_index;
+    }
+
+    // Add the ones which werent added to array
+    while(count1 < s1){
+        array[array_index] = left_vect[count1];
+        ++count1;
+        ++array_index;
+    }
+    while(count2 < s2){
+        array[array_index] = right_vect[count2];
+        ++count2;
+        ++array_index;
+    }
 
 }
 
+
+void Graph::checkOutDegree(void){
+    for(auto &pair : this->adjacencyList){
+        // Ensure its sorted always
+        mergeSort(this->maxOuts, 0, this->maxOuts.size() - 1);
+        if(this->maxOuts.size() < 10){
+            // If size is less than 10 add whichever node
+            this->maxOuts.push_back(pair.second.front());
+        }else{
+            // If this element is larger than smallest element maxOuts vector replace it
+            if(pair.second.front()->out_degree < this->maxOuts[0]->out_degree){
+                this->maxOuts[0] = pair.second.front();
+            }
+        }
+    }
+
+    // Show max out degree items
+    for(auto &it : this->maxOuts){
+        std::cout << "IP segment: " << it->value << " - Out Degree Value: " << it->out_degree << "\n";
+    }
+}
+
 int main(){
-    Graph ip_graph();
+    Graph ip_graph;
     std::ifstream InputFile("bitacora.txt");
     std::ofstream OutputFile("Output.txt");
     if(!InputFile || !OutputFile){std::cerr << "Error opening files\n"; return EXIT_FAILURE;}
@@ -131,12 +240,32 @@ int main(){
         ss >> time >> aux;
 
         // Manage ip/port division
-        const int delimiter_index = aux.find(":");
+        std::string aux2 = "";
+        std::vector<int> ip_vals;   // To get ips for nodes
+        int delimiter_index = aux.find(".");
+
+        // Check for valid ip sections and ignore ports
         for(int i=0; i < aux.length(); ++i){
-            if(i < delimiter_index){ip += aux[i];
-            }else if (i > delimiter_index){port += aux[i];}
+            if(aux[i] != '.' && aux[i] != ':'){
+                aux2 += aux[i];
+            }else if(aux[i] == '.' || aux[i] == ':'){
+                // Add int ip to vector to add them to graph later
+                ip_vals.push_back(std::stoi(aux2));
+                aux2 = "";  // Reset
+            }
+            // Ignore port section
+            if(aux[i] == ':'){break;}
+        }
+
+        // Edge values to the adjacent ip component inside the graph
+        for(int i=0; i < ip_vals.size() - 1; ++i){
+            ip_graph.addEdge(ip_vals[i], ip_vals[i + 1]);
+            std::cout << ip_vals[i] << " - " << ip_vals[i+1] << "\n";
         }
     }
+
+    ip_graph.showGraph();
+    ip_graph.checkOutDegree();
     
     // Print info of nodes with most port accesses
     OutputFile << "PORTS WITH MOST ACCESSES\n";
