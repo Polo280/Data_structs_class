@@ -1,1 +1,11 @@
 PORTS WITH MOST ACCESSES
+IP segment: 329 - Out Degree Value: 17
+IP segment: 775 - Out Degree Value: 20
+IP segment: 742 - Out Degree Value: 20
+IP segment: 383 - Out Degree Value: 21
+IP segment: 834 - Out Degree Value: 21
+IP segment: 800 - Out Degree Value: 22
+IP segment: 566 - Out Degree Value: 26
+IP segment: 571 - Out Degree Value: 28
+IP segment: 380 - Out Degree Value: 29
+IP segment: 670 - Out Degree Value: 29

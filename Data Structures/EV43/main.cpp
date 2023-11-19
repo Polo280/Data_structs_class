@@ -1,3 +1,9 @@
+/* EQUIPO 5
+- Ana Valeria Guzman Vazquez    / A01643224
+- Clarissa Gardea Coronado      / A01569420
+- Jorge Alejandro Gonzalez Diaz / A00344893
+*/
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -26,8 +32,9 @@ class Graph{
         void resetAll(void);
         bool node_exists(int);
         void showGraph(void);
-        void checkOutDegree(void);
+        void checkOutDegree(std::ofstream &);
 };
+
 
 /**
  * @brief A function which displays the adjacency list of the graph
@@ -148,6 +155,12 @@ void Graph::resetAll(void){
     }
 }
 
+/**
+ * @brief A merge sort function to ensure the vector containing the nodes with max out degrees is always sorted 
+ * @param array The vector containing the nodes with more out-degrees
+ * @param left Left limit to sort 
+ * @param right Right limit to sort 
+*/
 void mergeSort(std::vector<Node*> &array, int left, int right){
     // Management of base case
     if(left >= right){return;}
@@ -199,8 +212,12 @@ void mergeSort(std::vector<Node*> &array, int left, int right){
 
 }
 
-
-void Graph::checkOutDegree(void){
+/**
+ * @brief A function to check all nodes and store the top 10 nodes with the largest out degrees in a vector. After this, it
+ * writes them into an Output File passed by reference to the function
+ * @param OutputFile File to write top 10 IP sections with largest out-degrees
+*/
+void Graph::checkOutDegree(std::ofstream &OutputFile){
     for(auto &pair : this->adjacencyList){
         // Ensure its sorted always
         mergeSort(this->maxOuts, 0, this->maxOuts.size() - 1);
@@ -217,7 +234,7 @@ void Graph::checkOutDegree(void){
 
     // Show max out degree items
     for(auto &it : this->maxOuts){
-        std::cout << "IP segment: " << it->value << " - Out Degree Value: " << it->out_degree << "\n";
+        OutputFile << "IP segment: " << it->value << " - Out Degree Value: " << it->out_degree << "\n";
     }
 }
 
@@ -231,10 +248,14 @@ int main(){
     std::string date, time, ip, port, entry;
     std::string aux;
     while(InputFile){
-        // Reset variables and split entry
-        ip = port = "";
+        // Reset variables
+        ip = port = date = time = "";
+
+        // Split 
         getline(InputFile, entry);
         std::stringstream ss(entry);
+
+        // Update time and date
         ss >> date >> aux;
         date += aux;
         ss >> time >> aux;
@@ -246,34 +267,28 @@ int main(){
 
         // Check for valid ip sections and ignore ports
         for(int i=0; i < aux.length(); ++i){
-            if(aux[i] != '.' && aux[i] != ':'){
-                aux2 += aux[i];
-            }else if(aux[i] == '.' || aux[i] == ':'){
+            if(aux[i] == '.' || aux[i] == ':'){
                 // Add int ip to vector to add them to graph later
                 ip_vals.push_back(std::stoi(aux2));
                 aux2 = "";  // Reset
-            }
-            // Ignore port section
-            if(aux[i] == ':'){break;}
+            }else if(aux[i] != '.' && aux[i] != ':'){
+                aux2 += aux[i];
+            }else if(aux[i] == ':'){break;}  // Ignore from port and after
         }
 
         // Edge values to the adjacent ip component inside the graph
         for(int i=0; i < ip_vals.size() - 1; ++i){
             ip_graph.addEdge(ip_vals[i], ip_vals[i + 1]);
-            std::cout << ip_vals[i] << " - " << ip_vals[i+1] << "\n";
         }
     }
-
-    ip_graph.showGraph();
-    ip_graph.checkOutDegree();
     
     // Print info of nodes with most port accesses
     OutputFile << "PORTS WITH MOST ACCESSES\n";
+    ip_graph.checkOutDegree(OutputFile);
     
-    //tree.postOrder();
+    std::cout << "Successfully writen results to Output.txt file\n";
     InputFile.close();
     OutputFile.close();
-
 
     return EXIT_SUCCESS;
 }
